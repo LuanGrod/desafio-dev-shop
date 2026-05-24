@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useCheckoutIdempotency } from "../checkout/idempotency";
 import type { Route } from "./+types/checkout";
 import { checkoutProduct } from "../checkout/product";
 
@@ -19,6 +20,8 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Checkout() {
   const [quantity, setQuantity] = useState(1);
+  const checkoutItemsSignature = `${checkoutProduct.id}:${quantity}`;
+  const checkoutIdempotency = useCheckoutIdempotency(checkoutItemsSignature);
   const isSubmittingCheckout = false;
   const isOrderProcessing = false;
   const isQuantityValid = quantity >= 1;

@@ -62,19 +62,19 @@ Critérios de aceitação:
 [x] O botão fica desabilitado durante o envio da tentativa de checkout.
 [x] O botão fica desabilitado enquanto o pedido estiver com status `PROCESSING`.
 
-[ ] Task 6: Gerenciar chave de idempotência da tentativa de checkout
+[x] Task 6: Gerenciar chave de idempotência da tentativa de checkout
 
 Critérios de aceitação:
 
-[ ] Existe um mecanismo para manter a chave de idempotência da tentativa atual.
-[ ] O mecanismo expõe ou centraliza uma ação para criar ou reutilizar a chave atual.
-[ ] O mecanismo usa `crypto.randomUUID()` quando disponível.
-[ ] O mecanismo possui fallback seguro para ambientes sem `crypto.randomUUID()`.
-[ ] A mesma chave é mantida enquanto a tentativa estiver sendo enviada.
-[ ] A mesma chave é mantida enquanto o pedido estiver com status `PROCESSING`.
-[ ] A chave é limpa quando o pedido chega em `APPROVED` ou `REJECTED`.
-[ ] Uma nova chave é gerada quando o usuário inicia uma nova tentativa após status final.
-[ ] Uma nova chave é gerada quando os itens da compra mudam depois de uma tentativa finalizada.
+[x] Existe um mecanismo para manter a chave de idempotência da tentativa atual.
+[x] O mecanismo expõe ou centraliza uma ação para criar ou reutilizar a chave atual.
+[x] O mecanismo usa `crypto.randomUUID()` quando disponível.
+[x] O mecanismo possui fallback seguro para ambientes sem `crypto.randomUUID()`.
+[x] A mesma chave é mantida enquanto a tentativa estiver sendo enviada.
+[x] A mesma chave é mantida enquanto o pedido estiver com status `PROCESSING`.
+[x] A chave é limpa quando o pedido chega em `APPROVED` ou `REJECTED`.
+[x] Uma nova chave é gerada quando o usuário inicia uma nova tentativa após status final.
+[x] Uma nova chave é gerada quando os itens da compra mudam depois de uma tentativa finalizada.
 
 [ ] Task 7: Criar cliente de API do checkout
 
