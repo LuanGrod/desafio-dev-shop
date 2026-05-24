@@ -27,49 +27,49 @@ Critérios de aceitação:
 [x] O layout evita excesso de elementos decorativos e mantém aparência de checkout moderno.
 [x] A tela não exibe stack trace, mensagens técnicas cruas ou detalhes internos para o usuário final.
 
-[ ] Task 3: Criar o produto mockado do checkout
+[x] Task 3: Criar o produto mockado do checkout
 
 Critérios de aceitação:
 
-[ ] Existe um produto hardcoded no front-end com `id`, `name`, `description`, `price` e `stock`.
-[ ] O produto usa dados equivalentes a uma capinha de celular, por exemplo `Capinha Clear Case iPhone 15`.
-[ ] O card do produto exibe nome, descrição curta, preço formatado em reais e estoque disponível.
-[ ] O produto fica separado em uma constante ou módulo simples para evitar duplicação de dados na tela.
-[ ] A interface deixa claro que o usuário está comprando uma capinha de celular.
+[x] Existe um produto hardcoded no front-end com `id`, `name`, `description`, `price` e `stock`.
+[x] O produto usa dados equivalentes a uma capinha de celular, por exemplo `Capinha Clear Case iPhone 15`.
+[x] O card do produto exibe nome, descrição curta, preço formatado em reais e estoque disponível.
+[x] O produto fica separado em uma constante ou módulo simples para evitar duplicação de dados na tela.
+[x] A interface deixa claro que o usuário está comprando uma capinha de celular.
 
-[ ] Task 4: Implementar o stepper de quantidade
-
-Critérios de aceitação:
-
-[ ] Existe um componente de quantidade no formato visual `[-] quantidade [+]`.
-[ ] O botão `-` diminui a quantidade.
-[ ] O botão `+` aumenta a quantidade.
-[ ] A quantidade atual aparece no centro do stepper.
-[ ] A quantidade inicial é `1`.
-[ ] O uso normal da interface impede quantidade menor que `1`.
-[ ] O botão `-` fica desabilitado quando a quantidade atual é `1`.
-[ ] O componente não usa um input de texto solto como controle principal.
-
-[ ] Task 5: Montar o resumo da compra e botão principal
+[x] Task 4: Implementar o stepper de quantidade
 
 Critérios de aceitação:
 
-[ ] Existe uma área de resumo com preço unitário, quantidade selecionada e total calculado.
-[ ] O total é recalculado quando a quantidade muda.
-[ ] Existe um botão principal com o texto `Finalizar compra`.
-[ ] O botão principal tem destaque visual suficiente em relação aos demais elementos.
-[ ] O botão fica desabilitado quando a quantidade local for inválida.
-[ ] O botão fica desabilitado durante o envio da tentativa de checkout.
-[ ] O botão fica desabilitado enquanto o pedido estiver com status `PROCESSING`.
+[x] Existe um componente de quantidade no formato visual `[-] quantidade [+]`.
+[x] O botão `-` diminui a quantidade.
+[x] O botão `+` aumenta a quantidade.
+[x] A quantidade atual aparece no centro do stepper.
+[x] A quantidade inicial é `1`.
+[x] O uso normal da interface impede quantidade menor que `1`.
+[x] O botão `-` fica desabilitado quando a quantidade atual é `1`.
+[x] O componente não usa um input de texto solto como controle principal.
 
-[ ] Task 6: Criar store Zustand para a tentativa de checkout
+[x] Task 5: Montar o resumo da compra e botão principal
 
 Critérios de aceitação:
 
-[ ] Existe uma store Zustand para manter a chave de idempotência da tentativa atual.
-[ ] A store expõe uma ação para criar ou reutilizar a chave atual.
-[ ] A store usa `crypto.randomUUID()` quando disponível.
-[ ] A store possui fallback seguro para ambientes sem `crypto.randomUUID()`.
+[x] Existe uma área de resumo com preço unitário, quantidade selecionada e total calculado.
+[x] O total é recalculado quando a quantidade muda.
+[x] Existe um botão principal com o texto `Finalizar compra`.
+[x] O botão principal tem destaque visual suficiente em relação aos demais elementos.
+[x] O botão fica desabilitado quando a quantidade local for inválida.
+[x] O botão fica desabilitado durante o envio da tentativa de checkout.
+[x] O botão fica desabilitado enquanto o pedido estiver com status `PROCESSING`.
+
+[ ] Task 6: Gerenciar chave de idempotência da tentativa de checkout
+
+Critérios de aceitação:
+
+[ ] Existe um mecanismo para manter a chave de idempotência da tentativa atual.
+[ ] O mecanismo expõe ou centraliza uma ação para criar ou reutilizar a chave atual.
+[ ] O mecanismo usa `crypto.randomUUID()` quando disponível.
+[ ] O mecanismo possui fallback seguro para ambientes sem `crypto.randomUUID()`.
 [ ] A mesma chave é mantida enquanto a tentativa estiver sendo enviada.
 [ ] A mesma chave é mantida enquanto o pedido estiver com status `PROCESSING`.
 [ ] A chave é limpa quando o pedido chega em `APPROVED` ou `REJECTED`.
@@ -83,7 +83,7 @@ Critérios de aceitação:
 [ ] Existe uma função para executar `POST /checkout`.
 [ ] O payload enviado segue o contrato `{ "items": [{ "product_id": 1, "quantity": quantidade }] }`.
 [ ] A requisição envia o header `Content-Type: application/json`.
-[ ] A requisição envia o header `Idempotency-Key` com a chave mantida no Zustand.
+[ ] A requisição envia o header `Idempotency-Key` com a chave de idempotência da tentativa atual.
 [ ] Existe uma função para executar `GET /orders/:order_id`.
 [ ] As respostas de pedido são tipadas com `order_id`, `status` e `message`.
 [ ] Os status aceitos no front-end são `PROCESSING`, `APPROVED` e `REJECTED`.

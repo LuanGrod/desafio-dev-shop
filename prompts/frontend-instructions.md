@@ -169,7 +169,7 @@ Implementação simples no front-end:
 - limpar a chave quando o pedido chegar em `APPROVED` ou `REJECTED`;
 - gerar uma nova chave se o usuário iniciar uma nova tentativa de compra depois de um status final ou mudar os itens da compra.
 
-Para este desafio, a chave deve ficar em um estado do Zustand.
+Para este desafio, a chave pode ficar em estado local do componente, `useRef`, hook próprio, Zustand ou mecanismo equivalente. O requisito importante é preservar a mesma chave durante a tentativa atual e não reutilizá-la indevidamente em uma nova compra com payload diferente.
 
 ## Integração com a API
 
