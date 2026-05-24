@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import {
   CHECKOUT_FALLBACK_ERROR_MESSAGE,
   CheckoutApiError,
@@ -11,10 +10,26 @@ import { useCheckoutIdempotency } from "../checkout/idempotency";
 import type { Route } from "./+types/checkout";
 import { checkoutProduct } from "../checkout/product";
 
+type CheckoutMessageTone = "processing" | "success" | "rejected" | "error";
+type CheckoutDisplayOrder =
+  | CheckoutOrderResponse
+  | {
+      order_id: null;
+      status: "ERROR";
+      message: string;
+    };
+
 const priceFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
 });
+
+const checkoutMessageToneClasses: Record<CheckoutMessageTone, string> = {
+  processing: "border-sky-200 bg-sky-50 text-sky-800",
+  success: "border-emerald-200 bg-emerald-50 text-emerald-800",
+  rejected: "border-amber-200 bg-amber-50 text-amber-800",
+  error: "border-rose-200 bg-rose-50 text-rose-800",
+};
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -30,7 +45,7 @@ export default function Checkout() {
   const [quantity, setQuantity] = useState(1);
   const [isSubmittingCheckout, setIsSubmittingCheckout] = useState(false);
   const [checkoutOrder, setCheckoutOrder] =
-    useState<CheckoutOrderResponse | null>(null);
+    useState<CheckoutDisplayOrder | null>(null);
   const checkoutItemsSignature = `${checkoutProduct.id}:${quantity}`;
   const checkoutIdempotency = useCheckoutIdempotency(checkoutItemsSignature);
   const isOrderProcessing = checkoutOrder?.status === "PROCESSING";
@@ -38,6 +53,14 @@ export default function Checkout() {
   const totalPrice = checkoutProduct.price * quantity;
   const isCheckoutButtonDisabled =
     !isQuantityValid || isSubmittingCheckout || isOrderProcessing;
+  const checkoutMessageTone: CheckoutMessageTone =
+    checkoutOrder?.status === "PROCESSING"
+      ? "processing"
+      : checkoutOrder?.status === "APPROVED"
+        ? "success"
+        : checkoutOrder?.status === "REJECTED"
+          ? "rejected"
+          : "error";
 
   useEffect(() => {
     if (!checkoutOrder || checkoutOrder.status !== "PROCESSING") {
@@ -66,7 +89,11 @@ export default function Checkout() {
         }
 
         clearInterval(pollingInterval);
-        toast.error(CHECKOUT_FALLBACK_ERROR_MESSAGE);
+        setCheckoutOrder({
+          order_id: null,
+          status: "ERROR",
+          message: CHECKOUT_FALLBACK_ERROR_MESSAGE,
+        });
       }
     };
 
@@ -80,7 +107,11 @@ export default function Checkout() {
 
   const handleCheckoutSubmit = async () => {
     if (quantity < 1) {
-      toast.error("Informe uma quantidade válida.");
+      setCheckoutOrder({
+        order_id: null,
+        status: "ERROR",
+        message: "Informe uma quantidade válida.",
+      });
       return;
     }
 
@@ -92,25 +123,26 @@ export default function Checkout() {
 
     try {
       setIsSubmittingCheckout(true);
+      setCheckoutOrder(null);
       checkoutIdempotency.syncAttemptStatus("SENDING");
 
-      const checkoutPromise = postCheckout({
+      const order = await postCheckout({
         productId: checkoutProduct.id,
         quantity,
         idempotencyKey,
       });
 
-      const order = await toast.promise(checkoutPromise, {
-        loading: "Finalizando compra...",
-        success: (order) => order.message,
-        error: (error) =>
+      setCheckoutOrder(order);
+      checkoutIdempotency.syncAttemptStatus(order.status);
+    } catch (error) {
+      setCheckoutOrder({
+        order_id: null,
+        status: "ERROR",
+        message:
           error instanceof CheckoutApiError
             ? error.message
             : CHECKOUT_FALLBACK_ERROR_MESSAGE,
       });
-
-      setCheckoutOrder(order);
-      checkoutIdempotency.syncAttemptStatus(order.status);
     } finally {
       setIsSubmittingCheckout(false);
     }
@@ -255,13 +287,14 @@ export default function Checkout() {
               </dl>
 
               {checkoutOrder ? (
-                <div className="rounded-md border border-zinc-200 bg-zinc-50 p-3 text-sm leading-6 text-zinc-700">
-                  <p className="font-medium text-zinc-950">
-                    {checkoutOrder.status === "PROCESSING"
-                      ? "Pedido em processamento"
-                      : "Status do pedido"}
-                  </p>
-                  <p>{checkoutOrder.message}</p>
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className={`rounded-md border p-3 text-sm leading-6 ${
+                    checkoutMessageToneClasses[checkoutMessageTone]
+                  }`}
+                >
+                  {checkoutOrder.message}
                 </div>
               ) : null}
 

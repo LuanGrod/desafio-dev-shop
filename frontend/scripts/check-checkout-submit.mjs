@@ -31,16 +31,16 @@ assert.match(
   "checkout page should define an async submit handler for checkout",
 );
 
-assert.match(
+assert.doesNotMatch(
   source,
-  /import\s+toast\s+from\s+"react-hot-toast"/,
-  "checkout page should import the react-hot-toast dispatcher",
+  /import\s+toast\s+from\s+"react-hot-toast"|toast\./,
+  "checkout page should not use toast notifications for checkout feedback",
 );
 
 assert.match(
   source,
-  /if\s*\(quantity\s*<\s*1\)\s*\{[\s\S]*toast\.error\("Informe uma quantidade válida\."\)[\s\S]*return;/,
-  "checkout submit should block invalid local quantity and show a toast message",
+  /if\s*\(quantity\s*<\s*1\)\s*\{[\s\S]*setCheckoutOrder\(\{\s*order_id:\s*null,\s*status:\s*"ERROR",\s*message:\s*"Informe uma quantidade válida\."[\s\S]*return;/,
+  "checkout submit should block invalid local quantity and show the persistent inline message through checkoutOrder",
 );
 
 assert.match(
@@ -61,16 +61,16 @@ assert.match(
   "checkout submit should call POST /checkout with product id, quantity, and idempotency key",
 );
 
-assert.match(
+assert.doesNotMatch(
   source,
-  /const\s+checkoutPromise\s*=\s*postCheckout\(\{[\s\S]*productId:\s*checkoutProduct\.id,[\s\S]*quantity,[\s\S]*idempotencyKey,[\s\S]*\}\)/,
-  "checkout submit should keep the POST checkout promise for toast.promise",
+  /toast\.promise/,
+  "checkout submit should not duplicate persistent status messages through toast.promise",
 );
 
 assert.match(
   source,
-  /toast\.promise\(checkoutPromise,\s*\{[\s\S]*loading:\s*"Finalizando compra\.\.\."[\s\S]*success:\s*\(order\)\s*=>\s*order\.message[\s\S]*error:\s*\(error\)\s*=>[\s\S]*CHECKOUT_FALLBACK_ERROR_MESSAGE[\s\S]*\}\)/,
-  "checkout submit should use toast.promise with dynamic API success and safe error messages",
+  /const\s+order\s*=\s*await\s+postCheckout\(\{[\s\S]*productId:\s*checkoutProduct\.id,[\s\S]*quantity,[\s\S]*idempotencyKey,[\s\S]*\}\)/,
+  "checkout submit should await POST /checkout directly and render the API message persistently",
 );
 
 assert.match(
@@ -88,7 +88,7 @@ assert.match(
 assert.doesNotMatch(
   source,
   /toast\.loading|toast\(order\.message|toast\.error\(errorMessage,\s*\{\s*id:/,
-  "checkout submit should rely on toast.promise instead of manually replacing toast states",
+  "checkout submit should not manually manage toast notification states",
 );
 
 assert.match(
@@ -105,6 +105,6 @@ assert.match(
 
 assert.doesNotMatch(
   source,
-  /role="status"|checkoutMessage|setCheckoutMessage|checkoutMessageTone|setCheckoutMessageTone/,
-  "checkout page should not render the old inline message above the button",
+  /setCheckoutMessage|setCheckoutMessageTone|checkoutErrorMessage|setCheckoutErrorMessage|const\s+checkoutMessage\s*=/,
+  "checkout submit should not use separate message state outside checkoutOrder",
 );

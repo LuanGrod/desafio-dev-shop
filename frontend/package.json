@@ -11,6 +11,7 @@
     "test:checkout-idempotency": "node ./scripts/check-checkout-idempotency.mjs",
     "test:checkout-api-client": "node ./scripts/check-checkout-api-client.mjs",
     "test:checkout-polling": "node ./scripts/check-checkout-polling.mjs",
+    "test:checkout-messages": "node ./scripts/check-checkout-messages.mjs",
     "test:checkout-submit": "node ./scripts/check-checkout-submit.mjs",
     "test:checkout-summary": "node ./scripts/check-checkout-summary.mjs",
     "start": "react-router-serve ./build/server/index.js",

@@ -119,18 +119,18 @@ Critérios de aceitação:
 [x] O polling para ou pausa em erro de rede, timeout ou resposta inesperada.
 [x] O botão `Finalizar compra` permanece desabilitado durante `PROCESSING`.
 
-[ ] Task 10: Exibir mensagens de sucesso, rejeição e erro
+[x] Task 10: Exibir mensagens de sucesso, rejeição e erro
 
 Critérios de aceitação:
 
-[ ] Para `PROCESSING`, a tela exibe a mensagem retornada pela API.
-[ ] Para `APPROVED`, a tela exibe a mensagem final de aprovação retornada pela API.
-[ ] Para `REJECTED`, a tela exibe a mensagem final de rejeição retornada pela API.
-[ ] Para quantidade inválida rejeitada pela API, a tela exibe a mensagem retornada pelo back-end.
-[ ] Para estoque insuficiente informado pela API, a tela exibe a mensagem amigável retornada pelo back-end.
-[ ] Para API indisponível, timeout, erro inesperado ou ausência de mensagem útil, a tela exibe apenas a mensagem genérica local.
-[ ] O front-end não mantém mensagens finais de aprovação ou rejeição hardcoded como regra de negócio.
-[ ] O estado visual da mensagem diferencia processamento, sucesso, rejeição e erro inesperado.
+[x] Para `PROCESSING`, a tela exibe a mensagem retornada pela API.
+[x] Para `APPROVED`, a tela exibe a mensagem final de aprovação retornada pela API.
+[x] Para `REJECTED`, a tela exibe a mensagem final de rejeição retornada pela API.
+[x] Para quantidade inválida rejeitada pela API, a tela exibe a mensagem retornada pelo back-end.
+[x] Para estoque insuficiente informado pela API, a tela exibe a mensagem amigável retornada pelo back-end.
+[x] Para API indisponível, timeout, erro inesperado ou ausência de mensagem útil, a tela exibe apenas a mensagem genérica local.
+[x] O front-end não mantém mensagens finais de aprovação ou rejeição hardcoded como regra de negócio.
+[x] O estado visual da mensagem diferencia processamento, sucesso, rejeição e erro inesperado.
 
 [ ] Task 11: Tratar idempotência em retentativas e mudanças de compra
 
