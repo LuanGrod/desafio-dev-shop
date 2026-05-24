@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Route } from "./+types/checkout";
 import { checkoutProduct } from "../checkout/product";
 
@@ -17,6 +18,8 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Checkout() {
+  const [quantity, setQuantity] = useState(1);
+
   return (
     <main className="min-h-screen bg-[#f5f5f2] px-4 py-6 text-zinc-950 sm:px-6 lg:px-8">
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-8">
@@ -106,20 +109,30 @@ export default function Checkout() {
 
               <div className="flex items-center justify-between gap-4 rounded-md border border-zinc-200 p-3">
                 <span className="text-sm font-medium text-zinc-600">Quantidade</span>
-                <div className="flex items-center gap-3" aria-label="Quantidade selecionada">
+                <div
+                  data-testid="quantity-stepper"
+                  className="flex items-center gap-3"
+                  aria-label="Quantidade selecionada"
+                >
                   <button
                     type="button"
-                    disabled
-                    className="flex h-9 w-9 items-center justify-center rounded-md border border-zinc-200 text-lg font-medium text-zinc-400"
+                    aria-label="Diminuir quantidade"
+                    disabled={quantity === 1}
+                    onClick={() =>
+                      setQuantity((current) => Math.max(1, current - 1))
+                    }
+                    className="flex h-9 w-9 items-center justify-center rounded-md border border-zinc-200 text-lg font-medium text-zinc-950 transition hover:border-zinc-300 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:border-zinc-200 disabled:hover:bg-white"
                   >
                     -
                   </button>
                   <span className="min-w-6 text-center text-base font-semibold text-zinc-950">
-                    1
+                    {quantity}
                   </span>
                   <button
                     type="button"
-                    className="flex h-9 w-9 items-center justify-center rounded-md border border-zinc-300 text-lg font-medium text-zinc-950"
+                    aria-label="Aumentar quantidade"
+                    onClick={() => setQuantity((current) => current + 1)}
+                    className="flex h-9 w-9 items-center justify-center rounded-md border border-zinc-300 text-lg font-medium text-zinc-950 transition hover:border-zinc-400 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2"
                   >
                     +
                   </button>
@@ -135,7 +148,7 @@ export default function Checkout() {
                 </div>
                 <div className="flex items-center justify-between gap-4">
                   <dt>Quantidade</dt>
-                  <dd className="font-medium text-zinc-950">1</dd>
+                  <dd className="font-medium text-zinc-950">{quantity}</dd>
                 </div>
                 <div className="flex items-center justify-between gap-4 border-t border-zinc-200 pt-4 text-base">
                   <dt className="font-semibold text-zinc-950">Total</dt>

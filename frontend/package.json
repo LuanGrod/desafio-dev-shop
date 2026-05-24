@@ -7,6 +7,7 @@
     "dev": "react-router dev",
     "test:checkout-layout": "node ./scripts/check-checkout-layout.mjs",
     "test:checkout-product": "node ./scripts/check-checkout-product.mjs",
+    "test:checkout-quantity-stepper": "node ./scripts/check-checkout-quantity-stepper.mjs",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
   },
