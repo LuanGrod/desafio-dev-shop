@@ -19,6 +19,12 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Checkout() {
   const [quantity, setQuantity] = useState(1);
+  const isSubmittingCheckout = false;
+  const isOrderProcessing = false;
+  const isQuantityValid = quantity >= 1;
+  const totalPrice = checkoutProduct.price * quantity;
+  const isCheckoutButtonDisabled =
+    !isQuantityValid || isSubmittingCheckout || isOrderProcessing;
 
   return (
     <main className="min-h-screen bg-[#f5f5f2] px-4 py-6 text-zinc-950 sm:px-6 lg:px-8">
@@ -153,14 +159,16 @@ export default function Checkout() {
                 <div className="flex items-center justify-between gap-4 border-t border-zinc-200 pt-4 text-base">
                   <dt className="font-semibold text-zinc-950">Total</dt>
                   <dd className="font-semibold text-zinc-950">
-                    {priceFormatter.format(checkoutProduct.price)}
+                    {priceFormatter.format(totalPrice)}
                   </dd>
                 </div>
               </dl>
 
               <button
                 type="button"
-                className="w-full rounded-md bg-emerald-600 px-4 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2"
+                disabled={isCheckoutButtonDisabled}
+                aria-disabled={isCheckoutButtonDisabled}
+                className="w-full rounded-md bg-emerald-600 px-4 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-300 disabled:text-zinc-600 disabled:hover:bg-zinc-300"
               >
                 Finalizar compra
               </button>

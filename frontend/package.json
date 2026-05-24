@@ -8,6 +8,7 @@
     "test:checkout-layout": "node ./scripts/check-checkout-layout.mjs",
     "test:checkout-product": "node ./scripts/check-checkout-product.mjs",
     "test:checkout-quantity-stepper": "node ./scripts/check-checkout-quantity-stepper.mjs",
+    "test:checkout-summary": "node ./scripts/check-checkout-summary.mjs",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
   },
