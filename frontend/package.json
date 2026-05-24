@@ -9,6 +9,7 @@
     "test:checkout-product": "node ./scripts/check-checkout-product.mjs",
     "test:checkout-quantity-stepper": "node ./scripts/check-checkout-quantity-stepper.mjs",
     "test:checkout-idempotency": "node ./scripts/check-checkout-idempotency.mjs",
+    "test:checkout-idempotency-retries": "node ./scripts/check-checkout-idempotency-retries.mjs",
     "test:checkout-api-client": "node ./scripts/check-checkout-api-client.mjs",
     "test:checkout-polling": "node ./scripts/check-checkout-polling.mjs",
     "test:checkout-messages": "node ./scripts/check-checkout-messages.mjs",

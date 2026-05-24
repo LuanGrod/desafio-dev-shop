@@ -132,18 +132,18 @@ Critérios de aceitação:
 [x] O front-end não mantém mensagens finais de aprovação ou rejeição hardcoded como regra de negócio.
 [x] O estado visual da mensagem diferencia processamento, sucesso, rejeição e erro inesperado.
 
-[ ] Task 11: Tratar idempotência em retentativas e mudanças de compra
+[x] Task 11: Tratar idempotência em retentativas e mudanças de compra
 
 Critérios de aceitação:
 
-[ ] Cliques repetidos durante envio não disparam múltiplos POSTs simultâneos.
-[ ] Uma retentativa da mesma tentativa reutiliza a mesma `Idempotency-Key`.
-[ ] A mesma chave é preservada se a tentativa estiver em andamento ou em `PROCESSING`.
-[ ] A chave é limpa ao receber `APPROVED`.
-[ ] A chave é limpa ao receber `REJECTED`.
-[ ] Após um status final, uma nova tentativa gera uma nova chave.
-[ ] Se a quantidade for alterada após status final, a próxima tentativa usa uma nova chave.
-[ ] A implementação não reutiliza uma chave antiga com payload diferente em nova compra.
+[x] Cliques repetidos durante envio não disparam múltiplos POSTs simultâneos.
+[x] Uma retentativa da mesma tentativa reutiliza a mesma `Idempotency-Key`.
+[x] A mesma chave é preservada se a tentativa estiver em andamento ou em `PROCESSING`.
+[x] A chave é limpa ao receber `APPROVED`.
+[x] A chave é limpa ao receber `REJECTED`.
+[x] Após um status final, uma nova tentativa gera uma nova chave.
+[x] Se a quantidade for alterada após status final, a próxima tentativa usa uma nova chave.
+[x] A implementação não reutiliza uma chave antiga com payload diferente em nova compra.
 
 [ ] Task 12: Integrar TanStack Query no app, se ainda não estiver configurado
 

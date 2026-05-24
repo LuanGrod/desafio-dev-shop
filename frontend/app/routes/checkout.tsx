@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CHECKOUT_FALLBACK_ERROR_MESSAGE,
   CheckoutApiError,
@@ -44,6 +44,7 @@ export function meta({}: Route.MetaArgs) {
 export default function Checkout() {
   const [quantity, setQuantity] = useState(1);
   const [isSubmittingCheckout, setIsSubmittingCheckout] = useState(false);
+  const isCheckoutSubmitLockedRef = useRef(false);
   const [checkoutOrder, setCheckoutOrder] =
     useState<CheckoutDisplayOrder | null>(null);
   const checkoutItemsSignature = `${checkoutProduct.id}:${quantity}`;
@@ -89,6 +90,7 @@ export default function Checkout() {
         }
 
         clearInterval(pollingInterval);
+        checkoutIdempotency.syncAttemptStatus("FAILED");
         setCheckoutOrder({
           order_id: null,
           status: "ERROR",
@@ -115,10 +117,15 @@ export default function Checkout() {
       return;
     }
 
-    if (isSubmittingCheckout || isOrderProcessing) {
+    if (
+      isCheckoutSubmitLockedRef.current ||
+      isSubmittingCheckout ||
+      isOrderProcessing
+    ) {
       return;
     }
 
+    isCheckoutSubmitLockedRef.current = true;
     const idempotencyKey = checkoutIdempotency.getOrCreateKey();
 
     try {
@@ -135,6 +142,7 @@ export default function Checkout() {
       setCheckoutOrder(order);
       checkoutIdempotency.syncAttemptStatus(order.status);
     } catch (error) {
+      checkoutIdempotency.syncAttemptStatus("FAILED");
       setCheckoutOrder({
         order_id: null,
         status: "ERROR",
@@ -144,6 +152,7 @@ export default function Checkout() {
             : CHECKOUT_FALLBACK_ERROR_MESSAGE,
       });
     } finally {
+      isCheckoutSubmitLockedRef.current = false;
       setIsSubmittingCheckout(false);
     }
   };
