@@ -6,26 +6,26 @@ Use `[ ]` para pendente e troque para `[x]` quando a task ou critério estiver c
 
 ## Escopo
 
-[ ] Task 1: Configurar a rota principal de checkout
+[x] Task 1: Configurar a rota principal de checkout
 
 Critérios de aceitação:
 
-[ ] Existe uma rota `/checkout` registrada em `frontend/app/routes.ts`.
-[ ] A rota renderiza uma tela dedicada de checkout em `frontend/app/routes/checkout.tsx`.
-[ ] A home redireciona para `/checkout` ou a experiência principal abre diretamente no checkout.
-[ ] O título e metadados da tela deixam claro que se trata de checkout.
-[ ] A rota funciona em navegação direta por URL, sem depender de estado anterior.
+[x] Existe uma rota `/checkout` registrada em `frontend/app/routes.ts`.
+[x] A rota renderiza uma tela dedicada de checkout em `frontend/app/routes/checkout.tsx`.
+[x] A home redireciona para `/checkout` ou a experiência principal abre diretamente no checkout.
+[x] O título e metadados da tela deixam claro que se trata de checkout.
+[x] A rota funciona em navegação direta por URL, sem depender de estado anterior.
 
-[ ] Task 2: Preparar o shell visual e layout responsivo da tela
+[x] Task 2: Preparar o shell visual e layout responsivo da tela
 
 Critérios de aceitação:
 
-[ ] A tela usa uma composição clara, limpa e direta, inspirada em `referencias/referencia1.png` e `referencias/referencia2.png`.
-[ ] Em desktop, o layout apresenta duas áreas principais: produto à esquerda e resumo/ação de compra à direita.
-[ ] Em telas menores, os blocos empilham verticalmente sem sobreposição de conteúdo.
-[ ] O espaçamento, alinhamento e hierarquia visual deixam produto, quantidade, resumo e ação principal fáceis de identificar.
-[ ] O layout evita excesso de elementos decorativos e mantém aparência de checkout moderno.
-[ ] A tela não exibe stack trace, mensagens técnicas cruas ou detalhes internos para o usuário final.
+[x] A tela usa uma composição clara, limpa e direta, inspirada em `referencias/referencia1.png` e `referencias/referencia2.png`.
+[x] Em desktop, o layout apresenta duas áreas principais: produto à esquerda e resumo/ação de compra à direita.
+[x] Em telas menores, os blocos empilham verticalmente sem sobreposição de conteúdo.
+[x] O espaçamento, alinhamento e hierarquia visual deixam produto, quantidade, resumo e ação principal fáceis de identificar.
+[x] O layout evita excesso de elementos decorativos e mantém aparência de checkout moderno.
+[x] A tela não exibe stack trace, mensagens técnicas cruas ou detalhes internos para o usuário final.
 
 [ ] Task 3: Criar o produto mockado do checkout
 
