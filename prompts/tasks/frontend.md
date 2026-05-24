@@ -76,34 +76,34 @@ Critérios de aceitação:
 [x] Uma nova chave é gerada quando o usuário inicia uma nova tentativa após status final.
 [x] Uma nova chave é gerada quando os itens da compra mudam depois de uma tentativa finalizada.
 
-[ ] Task 7: Criar cliente de API do checkout
+[x] Task 7: Criar cliente de API do checkout
 
 Critérios de aceitação:
 
-[ ] Existe uma função para executar `POST /checkout`.
-[ ] O payload enviado segue o contrato `{ "items": [{ "product_id": 1, "quantity": quantidade }] }`.
-[ ] A requisição envia o header `Content-Type: application/json`.
-[ ] A requisição envia o header `Idempotency-Key` com a chave de idempotência da tentativa atual.
-[ ] Existe uma função para executar `GET /orders/:order_id`.
-[ ] As respostas de pedido são tipadas com `order_id`, `status` e `message`.
-[ ] Os status aceitos no front-end são `PROCESSING`, `APPROVED` e `REJECTED`.
-[ ] Erros HTTP com `message` retornada pela API preservam essa mensagem para exibição.
-[ ] Erros de rede, timeout, resposta inesperada ou ausência de mensagem útil usam o fallback local `Não foi possível concluir a compra agora. Tente novamente em instantes.`
-[ ] Mensagens técnicas demais ou internas não são exibidas diretamente ao usuário final.
+[x] Existe uma função para executar `POST /checkout`.
+[x] O payload enviado segue o contrato `{ "items": [{ "product_id": 1, "quantity": quantidade }] }`.
+[x] A requisição envia o header `Content-Type: application/json`.
+[x] A requisição envia o header `Idempotency-Key` com a chave de idempotência da tentativa atual.
+[x] Existe uma função para executar `GET /orders/:order_id`.
+[x] As respostas de pedido são tipadas com `order_id`, `status` e `message`.
+[x] Os status aceitos no front-end são `PROCESSING`, `APPROVED` e `REJECTED`.
+[x] Erros HTTP com `message` retornada pela API preservam essa mensagem para exibição.
+[x] Erros de rede, timeout, resposta inesperada ou ausência de mensagem útil usam o fallback local `Não foi possível concluir a compra agora. Tente novamente em instantes.`
+[x] Mensagens técnicas demais ou internas não são exibidas diretamente ao usuário final.
 
-[ ] Task 8: Implementar envio da tentativa de checkout
+[x] Task 8: Implementar envio da tentativa de checkout
 
 Critérios de aceitação:
 
-[ ] O clique em `Finalizar compra` valida localmente se a quantidade é maior ou igual a `1`.
-[ ] Se a quantidade local for menor que `1`, o front-end bloqueia o envio e mostra uma mensagem simples.
-[ ] Em quantidade válida, o front-end gera ou reutiliza a chave de idempotência da tentativa atual.
-[ ] O front-end chama `POST /checkout` enviando `items` com `product_id` e `quantity`.
-[ ] Enquanto o POST está em andamento, o botão fica desabilitado.
-[ ] Enquanto o POST está em andamento, o texto do botão muda para um estado de envio, como `Finalizando...`.
-[ ] O usuário não consegue iniciar outra tentativa de compra durante o envio.
-[ ] O retorno inicial com status `PROCESSING` não é tratado como compra concluída.
-[ ] A mensagem retornada pela API para `PROCESSING` é exibida ao usuário.
+[x] O clique em `Finalizar compra` valida localmente se a quantidade é maior ou igual a `1`.
+[x] Se a quantidade local for menor que `1`, o front-end bloqueia o envio e mostra uma mensagem simples.
+[x] Em quantidade válida, o front-end gera ou reutiliza a chave de idempotência da tentativa atual.
+[x] O front-end chama `POST /checkout` enviando `items` com `product_id` e `quantity`.
+[x] Enquanto o POST está em andamento, o botão fica desabilitado.
+[x] Enquanto o POST está em andamento, o texto do botão muda para um estado de envio, como `Finalizando...`.
+[x] O usuário não consegue iniciar outra tentativa de compra durante o envio.
+[x] O retorno inicial com status `PROCESSING` não é tratado como compra concluída.
+[x] A mensagem retornada pela API para `PROCESSING` é exibida ao usuário.
 
 [ ] Task 9: Implementar polling do status do pedido
 

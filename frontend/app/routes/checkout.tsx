@@ -1,4 +1,11 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
+import {
+  CHECKOUT_FALLBACK_ERROR_MESSAGE,
+  CheckoutApiError,
+  postCheckout,
+  type CheckoutOrderResponse,
+} from "../checkout/api";
 import { useCheckoutIdempotency } from "../checkout/idempotency";
 import type { Route } from "./+types/checkout";
 import { checkoutProduct } from "../checkout/product";
@@ -20,14 +27,54 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Checkout() {
   const [quantity, setQuantity] = useState(1);
+  const [isSubmittingCheckout, setIsSubmittingCheckout] = useState(false);
+  const [checkoutOrder, setCheckoutOrder] =
+    useState<CheckoutOrderResponse | null>(null);
   const checkoutItemsSignature = `${checkoutProduct.id}:${quantity}`;
   const checkoutIdempotency = useCheckoutIdempotency(checkoutItemsSignature);
-  const isSubmittingCheckout = false;
-  const isOrderProcessing = false;
+  const isOrderProcessing = checkoutOrder?.status === "PROCESSING";
   const isQuantityValid = quantity >= 1;
   const totalPrice = checkoutProduct.price * quantity;
   const isCheckoutButtonDisabled =
     !isQuantityValid || isSubmittingCheckout || isOrderProcessing;
+
+  const handleCheckoutSubmit = async () => {
+    if (quantity < 1) {
+      toast.error("Informe uma quantidade válida.");
+      return;
+    }
+
+    if (isSubmittingCheckout || isOrderProcessing) {
+      return;
+    }
+
+    const idempotencyKey = checkoutIdempotency.getOrCreateKey();
+
+    try {
+      setIsSubmittingCheckout(true);
+      checkoutIdempotency.syncAttemptStatus("SENDING");
+
+      const checkoutPromise = postCheckout({
+        productId: checkoutProduct.id,
+        quantity,
+        idempotencyKey,
+      });
+
+      const order = await toast.promise(checkoutPromise, {
+        loading: "Finalizando compra...",
+        success: (order) => order.message,
+        error: (error) =>
+          error instanceof CheckoutApiError
+            ? error.message
+            : CHECKOUT_FALLBACK_ERROR_MESSAGE,
+      });
+
+      setCheckoutOrder(order);
+      checkoutIdempotency.syncAttemptStatus(order.status);
+    } finally {
+      setIsSubmittingCheckout(false);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-[#f5f5f2] px-4 py-6 text-zinc-950 sm:px-6 lg:px-8">
@@ -171,9 +218,10 @@ export default function Checkout() {
                 type="button"
                 disabled={isCheckoutButtonDisabled}
                 aria-disabled={isCheckoutButtonDisabled}
+                onClick={handleCheckoutSubmit}
                 className="w-full rounded-md bg-emerald-600 px-4 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-300 disabled:text-zinc-600 disabled:hover:bg-zinc-300"
               >
-                Finalizar compra
+                {isSubmittingCheckout ? "Finalizando..." : "Finalizar compra"}
               </button>
             </div>
           </aside>

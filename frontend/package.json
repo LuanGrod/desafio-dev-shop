@@ -9,6 +9,8 @@
     "test:checkout-product": "node ./scripts/check-checkout-product.mjs",
     "test:checkout-quantity-stepper": "node ./scripts/check-checkout-quantity-stepper.mjs",
     "test:checkout-idempotency": "node ./scripts/check-checkout-idempotency.mjs",
+    "test:checkout-api-client": "node ./scripts/check-checkout-api-client.mjs",
+    "test:checkout-submit": "node ./scripts/check-checkout-submit.mjs",
     "test:checkout-summary": "node ./scripts/check-checkout-summary.mjs",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
