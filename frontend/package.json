@@ -6,6 +6,7 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "test:checkout-layout": "node ./scripts/check-checkout-layout.mjs",
+    "test:checkout-product": "node ./scripts/check-checkout-product.mjs",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
   },

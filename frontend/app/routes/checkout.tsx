@@ -1,4 +1,10 @@
 import type { Route } from "./+types/checkout";
+import { checkoutProduct } from "../checkout/product";
+
+const priceFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -53,21 +59,24 @@ export default function Checkout() {
                     id="checkout-product-title"
                     className="mt-1 text-2xl font-semibold tracking-normal text-zinc-950"
                   >
-                    Capinha Clear Case iPhone 15
+                    {checkoutProduct.name}
                   </h2>
                   <p className="mt-3 max-w-xl text-base leading-7 text-zinc-600">
-                    Capinha transparente com proteção reforçada nas bordas e
-                    acabamento leve para o uso diário.
+                    {checkoutProduct.description}
                   </p>
                 </div>
 
                 <div className="grid gap-3 text-sm text-zinc-600 sm:grid-cols-3">
                   <div className="rounded-md border border-zinc-200 p-3">
-                    <p className="font-medium text-zinc-950">R$ 79,90</p>
+                    <p className="font-medium text-zinc-950">
+                      {priceFormatter.format(checkoutProduct.price)}
+                    </p>
                     <p>Preço unitário</p>
                   </div>
                   <div className="rounded-md border border-zinc-200 p-3">
-                    <p className="font-medium text-zinc-950">5 unidades</p>
+                    <p className="font-medium text-zinc-950">
+                      {checkoutProduct.stock} unidades
+                    </p>
                     <p>Estoque disponível</p>
                   </div>
                   <div className="rounded-md border border-zinc-200 p-3">
@@ -120,7 +129,9 @@ export default function Checkout() {
               <dl className="space-y-3 text-sm text-zinc-600">
                 <div className="flex items-center justify-between gap-4">
                   <dt>Preço unitário</dt>
-                  <dd className="font-medium text-zinc-950">R$ 79,90</dd>
+                  <dd className="font-medium text-zinc-950">
+                    {priceFormatter.format(checkoutProduct.price)}
+                  </dd>
                 </div>
                 <div className="flex items-center justify-between gap-4">
                   <dt>Quantidade</dt>
@@ -128,7 +139,9 @@ export default function Checkout() {
                 </div>
                 <div className="flex items-center justify-between gap-4 border-t border-zinc-200 pt-4 text-base">
                   <dt className="font-semibold text-zinc-950">Total</dt>
-                  <dd className="font-semibold text-zinc-950">R$ 79,90</dd>
+                  <dd className="font-semibold text-zinc-950">
+                    {priceFormatter.format(checkoutProduct.price)}
+                  </dd>
                 </div>
               </dl>
 
