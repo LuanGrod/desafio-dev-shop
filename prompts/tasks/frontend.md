@@ -105,19 +105,19 @@ Critérios de aceitação:
 [x] O retorno inicial com status `PROCESSING` não é tratado como compra concluída.
 [x] A mensagem retornada pela API para `PROCESSING` é exibida ao usuário.
 
-[ ] Task 9: Implementar polling do status do pedido
+[x] Task 9: Implementar polling do status do pedido
 
 Critérios de aceitação:
 
-[ ] O polling começa apenas depois que o POST retorna `order_id` e status `PROCESSING`.
-[ ] O polling consulta `GET /orders/:order_id`.
-[ ] O polling usa TanStack Query ou mecanismo equivalente.
-[ ] O intervalo de consulta fica em torno de 1 ou 2 segundos enquanto o status for `PROCESSING`.
-[ ] A tela continua exibindo que o pedido está em processamento enquanto o status for `PROCESSING`.
-[ ] O polling para quando o pedido chega em `APPROVED`.
-[ ] O polling para quando o pedido chega em `REJECTED`.
-[ ] O polling para ou pausa em erro de rede, timeout ou resposta inesperada.
-[ ] O botão `Finalizar compra` permanece desabilitado durante `PROCESSING`.
+[x] O polling começa apenas depois que o POST retorna `order_id` e status `PROCESSING`.
+[x] O polling consulta `GET /orders/:order_id`.
+[x] O polling usa TanStack Query ou mecanismo equivalente.
+[x] O intervalo de consulta fica em torno de 1 ou 2 segundos enquanto o status for `PROCESSING`.
+[x] A tela continua exibindo que o pedido está em processamento enquanto o status for `PROCESSING`.
+[x] O polling para quando o pedido chega em `APPROVED`.
+[x] O polling para quando o pedido chega em `REJECTED`.
+[x] O polling para ou pausa em erro de rede, timeout ou resposta inesperada.
+[x] O botão `Finalizar compra` permanece desabilitado durante `PROCESSING`.
 
 [ ] Task 10: Exibir mensagens de sucesso, rejeição e erro
 

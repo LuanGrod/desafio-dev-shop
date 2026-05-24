@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
   CHECKOUT_FALLBACK_ERROR_MESSAGE,
   CheckoutApiError,
+  getOrder,
   postCheckout,
   type CheckoutOrderResponse,
 } from "../checkout/api";
@@ -37,6 +38,45 @@ export default function Checkout() {
   const totalPrice = checkoutProduct.price * quantity;
   const isCheckoutButtonDisabled =
     !isQuantityValid || isSubmittingCheckout || isOrderProcessing;
+
+  useEffect(() => {
+    if (!checkoutOrder || checkoutOrder.status !== "PROCESSING") {
+      return;
+    }
+
+    let isPollingActive = true;
+
+    const pollOrderStatus = async () => {
+      try {
+        const order = await getOrder(checkoutOrder.order_id);
+
+        if (!isPollingActive) {
+          return;
+        }
+
+        setCheckoutOrder(order);
+        checkoutIdempotency.syncAttemptStatus(order.status);
+
+        if (order.status !== "PROCESSING") {
+          clearInterval(pollingInterval);
+        }
+      } catch {
+        if (!isPollingActive) {
+          return;
+        }
+
+        clearInterval(pollingInterval);
+        toast.error(CHECKOUT_FALLBACK_ERROR_MESSAGE);
+      }
+    };
+
+    const pollingInterval = window.setInterval(pollOrderStatus, 2000);
+
+    return () => {
+      isPollingActive = false;
+      clearInterval(pollingInterval);
+    };
+  }, [checkoutOrder, checkoutIdempotency]);
 
   const handleCheckoutSubmit = async () => {
     if (quantity < 1) {
@@ -213,6 +253,17 @@ export default function Checkout() {
                   </dd>
                 </div>
               </dl>
+
+              {checkoutOrder ? (
+                <div className="rounded-md border border-zinc-200 bg-zinc-50 p-3 text-sm leading-6 text-zinc-700">
+                  <p className="font-medium text-zinc-950">
+                    {checkoutOrder.status === "PROCESSING"
+                      ? "Pedido em processamento"
+                      : "Status do pedido"}
+                  </p>
+                  <p>{checkoutOrder.message}</p>
+                </div>
+              ) : null}
 
               <button
                 type="button"
