@@ -42,7 +42,7 @@ Idempotency-Key: <uuid>
 Content-Type: application/json
 ```
 
-A chave de idempotência deve impedir que retentativas da mesma tentativa criem pedidos duplicados.
+A chave de idempotência deve impedir que retentativas do mesmo pedido criem pedidos duplicados.
 
 ### Entrada esperada
 
@@ -172,19 +172,32 @@ Depois de criar um pedido válido com status `PROCESSING`, a API deve simular o 
 
 Pode ser usado `setTimeout`, uma fila simples local ou outra abordagem equivalente.
 
-Durante o processamento, a API deve decidir se o pedido será:
+Também deve ser possível simular retries quando o ERP demorar mais que o timeout esperado, usando variáveis de ambiente, por exemplo:
 
-- `APPROVED`, quando houver estoque suficiente;
-- `REJECTED`, quando não houver estoque suficiente.
+- `ERP_SIMULATE_TIMEOUT=true`, para forçar cada tentativa de processamento a exceder o timeout esperado;
+- `ERP_PROCESSING_DELAY_MS`, para configurar o atraso artificial do ERP;
+- `ERP_PROCESSING_TIMEOUT_MS`, para configurar o tempo máximo esperado por tentativa;
+- `ERP_MAX_RETRIES`, para configurar o número máximo de novas tentativas;
+- `ERP_RETRY_DELAY_MS`, para configurar o intervalo entre tentativas.
 
-Ao aprovar a compra, o estoque em memória deve ser decrementado.
+Enquanto ainda houver tentativas disponíveis, o pedido deve permanecer como `PROCESSING`.
 
-Para manter o desafio simples, a verificação de estoque pode acontecer:
+Quando todas as tentativas forem esgotadas, o pedido deve ser marcado como `REJECTED`, com uma mensagem indicando falha por timeout no ERP após retries esgotados.
 
-- já no `POST /checkout`, rejeitando com `409 Conflict`; ou
-- durante o processamento simulado, retornando inicialmente `PROCESSING` e depois `REJECTED` no `GET /orders/:order_id`.
+O pedido deve manter em memória a quantidade de tentativas realizadas, para que o comportamento possa ser observado no `GET /orders/:order_id`.
 
-O comportamento escolhido deve ser claro e consistente.
+A API deve fazer uma validação inicial de estoque no `POST /checkout`.
+
+Se o estoque em memória já for insuficiente no momento da requisição, a API deve retornar `409 Conflict` e não deve criar o pedido.
+
+Se houver estoque suficiente inicialmente, o `POST /checkout` deve criar o pedido como `PROCESSING`, desde que a entrada seja válida e a chave de idempotência seja aceita.
+
+Durante o processamento assíncrono, antes de aprovar a compra, a API deve verificar o estoque novamente:
+
+- se ainda houver estoque suficiente, o pedido deve ser marcado como `APPROVED` e o estoque em memória deve ser decrementado;
+- se o estoque não for mais suficiente, o pedido deve ser marcado como `REJECTED`.
+
+Essa segunda verificação simula concorrência e evita aprovar pedidos com estoque esgotado entre a criação e o processamento.
 
 ## Validações obrigatórias
 
@@ -201,61 +214,9 @@ A API deve validar:
 - reutilização da mesma chave de idempotência com payload diferente;
 - pedido inexistente no `GET /orders/:order_id`.
 
-## Respostas HTTP esperadas
+## Contrato de respostas
 
-Usar códigos HTTP claros:
-
-- `202 Accepted` para tentativa válida criada ou retentativa idempotente ainda em processamento;
-- `200 OK` para consulta de pedido em `GET /orders/:order_id`;
-- `400 Bad Request` para dados inválidos ou ausência da chave de idempotência;
-- `404 Not Found` para produto ou pedido inexistente;
-- `409 Conflict` para estoque insuficiente, caso a implementação barre esse caso já no `POST /checkout`;
-- `500 Internal Server Error` para erro inesperado tratado com mensagem genérica;
-- `503 Service Unavailable` apenas se a implementação decidir simular indisponibilidade da API ou de serviço externo.
-
-Não retornar stack trace, detalhes internos ou mensagens técnicas para o usuário final.
-
-## Mensagens amigáveis
-
-As respostas devem conter mensagens compreensíveis para que o front-end consiga informar o usuário.
-
-Mensagens esperadas ou equivalentes:
-
-```json
-{
-  "message": "Pedido recebido e está sendo processado."
-}
-```
-
-```json
-{
-  "message": "Compra aprovada com sucesso."
-}
-```
-
-```json
-{
-  "message": "Informe uma quantidade válida."
-}
-```
-
-```json
-{
-  "message": "Não há estoque suficiente para essa quantidade."
-}
-```
-
-```json
-{
-  "message": "Não foi possível identificar a tentativa de compra. Tente novamente."
-}
-```
-
-```json
-{
-  "message": "Não foi possível concluir a compra agora. Tente novamente em instantes."
-}
-```
+As respostas devem seguir o contrato definido em `prompts/api-contract.md`, incluindo códigos HTTP, status de pedido, payloads e mensagens amigáveis.
 
 ## Organização sugerida no NestJS
 
@@ -305,7 +266,7 @@ Uma separação recomendada é:
 - **Controllers**: recebem requisições HTTP, extraem headers, params e body, chamam os casos de uso e traduzem erros conhecidos para respostas HTTP. Não devem conter regra de negócio de checkout, estoque, idempotência ou fila.
 - **Use cases**: concentram o fluxo de negócio. Exemplos: criar tentativa de checkout, consultar pedido, processar próximo pedido da fila. Devem ser fáceis de testar sem HTTP.
 - **Repositories em memória**: encapsulam leitura e escrita dos dados em memória, como produtos, estoque, pedidos e chaves de idempotência. Mesmo sem banco real, o restante da aplicação deve depender de uma interface clara de persistência.
-- **Queue em memória**: representa pedidos pendentes de processamento. A fila pode ser simples, local e baseada em arrays, mas deve deixar claro que em um ambiente real poderia ser substituída por uma fila externa.
+- **Queue em memória**: representa pedidos pendentes de processamento. A fila pode ser simples, local e baseada em maps, mas deve deixar claro que em um ambiente real poderia ser substituída por uma fila externa.
 - **Transaction manager em memória**: simula uma unidade atômica de alteração para operações sensíveis, principalmente reserva/decremento de estoque e mudança de status do pedido.
 
 Essa divisão deve ser pragmática. Não é necessário criar uma arquitetura grande, mas cada arquivo deve ter uma responsabilidade compreensível.
@@ -418,20 +379,6 @@ Essas invariantes podem ficar em entidades, funções de domínio ou use cases, 
 Mesmo sem banco real, a implementação deve demonstrar cuidado com concorrência. O caso mais importante é evitar que dois pedidos aprovados consumam o mesmo estoque e deixem o produto com quantidade negativa.
 
 A transação simulada pode resolver isso criando uma seção crítica em memória para a aprovação do pedido. Em produção, esse papel seria feito com transaction real do banco, lock pessimista, lock otimista por versão ou uma reserva de estoque com expiração.
-
-### Configuração dos cenários simulados
-
-A simulação de delays, falhas e pedidos que demoram para processar deve ficar centralizada e configurável. Evitar chamadas aleatórias espalhadas pelos use cases.
-
-Uma boa divisão é ter um `ProcessingScenarioResolver`, responsável por decidir o cenário de cada pedido. Em execução local, ele pode usar porcentagens. Em testes, ele deve aceitar cenários determinísticos para evitar flakiness.
-
-Exemplos de cenários:
-
-- processamento rápido aprovado;
-- processamento lento aprovado;
-- rejeição por estoque;
-- falha simulada com mensagem amigável;
-- permanência em `PROCESSING` por mais tempo para validar polling.
 
 ### Observabilidade simples
 

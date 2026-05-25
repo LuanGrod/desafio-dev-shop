@@ -119,9 +119,9 @@ Para ausência de chave de idempotência:
 
 ### Estoque insuficiente antes da criação do pedido
 
-Se a implementação decidir barrar estoque insuficiente já no `POST /checkout`, use:
+A API deve validar o estoque em memória no `POST /checkout` antes de criar o pedido.
 
-Status HTTP sugerido: `409 Conflict`.
+Se o estoque já for insuficiente nesse momento, a API deve retornar `409 Conflict` e não deve criar o pedido.
 
 ```json
 {
@@ -129,7 +129,7 @@ Status HTTP sugerido: `409 Conflict`.
 }
 ```
 
-Se a verificação de estoque acontecer apenas durante o processamento assíncrono, o `POST /checkout` pode retornar `PROCESSING` e a rejeição deve aparecer no `GET /orders/:order_id`.
+Se houver estoque suficiente inicialmente, a API deve criar o pedido com status `PROCESSING`. O processamento assíncrono deve verificar o estoque novamente antes de aprovar a compra, para simular concorrência entre criação e processamento.
 
 ### Erro inesperado
 
@@ -142,6 +142,11 @@ Status HTTP sugerido: `500 Internal Server Error`.
 ```
 
 Não retornar stack trace, detalhes internos ou mensagens técnicas para o usuário final.
+
+### Não foi possível processar o pedido mesmo com os retries
+
+Caso o pedido não consiga ser processado mesmo após os retries ele entenderá que o servico não esta disponível e retornar `503 Service Unavailable` 
+
 
 ## GET /orders/:order_id
 
