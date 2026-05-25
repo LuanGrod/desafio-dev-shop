@@ -1,5 +1,5 @@
 * falar do por que do polling no frontend
-  o ideal seria um websocket ou algo do tipo para atualizar o front mas para esse caso simples optei pelo pooling pois é mais simples
+  o ideal seria um SSE para atualizar o front mas para esse caso simples optei pelo pooling pois é mais simples
 
 frontend
 react + react router v7 + vite
