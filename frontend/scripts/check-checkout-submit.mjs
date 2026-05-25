@@ -45,7 +45,7 @@ assert.match(
 
 assert.match(
   source,
-  /if\s*\(isSubmittingCheckout\s*\|\|\s*isOrderProcessing\)\s*\{\s*return;\s*\}/,
+  /if\s*\([\s\S]*isSubmittingCheckout[\s\S]*isOrderProcessing[\s\S]*\)\s*\{\s*return;\s*\}/,
   "checkout submit should prevent repeated attempts while sending or processing",
 );
 
@@ -57,7 +57,7 @@ assert.match(
 
 assert.match(
   source,
-  /postCheckout\(\{[\s\S]*productId:\s*checkoutProduct\.id,[\s\S]*quantity,[\s\S]*idempotencyKey,[\s\S]*\}\)/,
+  /checkoutMutation\.mutate\(\{[\s\S]*productId:\s*checkoutProduct\.id,[\s\S]*quantity,[\s\S]*idempotencyKey,[\s\S]*\}\)/,
   "checkout submit should call POST /checkout with product id, quantity, and idempotency key",
 );
 
@@ -69,14 +69,20 @@ assert.doesNotMatch(
 
 assert.match(
   source,
-  /const\s+order\s*=\s*await\s+postCheckout\(\{[\s\S]*productId:\s*checkoutProduct\.id,[\s\S]*quantity,[\s\S]*idempotencyKey,[\s\S]*\}\)/,
-  "checkout submit should await POST /checkout directly and render the API message persistently",
+  /useMutation\(\{[\s\S]*mutationFn:\s*postCheckout[\s\S]*onSuccess:\s*\(order\)\s*=>[\s\S]*setCheckoutOrder\(order\)/,
+  "checkout mutation should use POST /checkout and render the API message persistently",
 );
 
 assert.match(
   source,
-  /setIsSubmittingCheckout\(true\)[\s\S]*finally\s*\{[\s\S]*setIsSubmittingCheckout\(false\)/,
-  "checkout submit should disable the button while the POST is in progress",
+  /setIsSubmittingCheckout\(true\)/,
+  "checkout submit should mark the POST as in progress",
+);
+
+assert.match(
+  source,
+  /onSettled:[\s\S]*setIsSubmittingCheckout\(false\)/,
+  "checkout submit should clear the sending state when the mutation settles",
 );
 
 assert.match(

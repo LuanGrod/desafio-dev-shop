@@ -54,14 +54,14 @@ assert.match(
 
 assert.match(
   checkoutSource,
-  /isCheckoutSubmitLockedRef\.current = true[\s\S]*await postCheckout/,
-  "checkout submit should lock before awaiting the POST request",
+  /isCheckoutSubmitLockedRef\.current = true[\s\S]*checkoutMutation\.mutate/,
+  "checkout submit should lock before starting the POST mutation",
 );
 
 assert.match(
   checkoutSource,
-  /finally \{[\s\S]*isCheckoutSubmitLockedRef\.current = false[\s\S]*setIsSubmittingCheckout\(false\)/,
-  "checkout submit should release the synchronous lock after the POST attempt finishes",
+  /onSettled:[\s\S]*isCheckoutSubmitLockedRef\.current = false[\s\S]*setIsSubmittingCheckout\(false\)/,
+  "checkout submit should release the synchronous lock after the POST mutation settles",
 );
 
 assert.match(

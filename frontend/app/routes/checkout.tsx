@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   CHECKOUT_FALLBACK_ERROR_MESSAGE,
   CheckoutApiError,
@@ -63,49 +64,63 @@ export default function Checkout() {
           ? "rejected"
           : "error";
 
+  const processingOrderId =
+    checkoutOrder?.status === "PROCESSING" ? checkoutOrder.order_id : null;
+  const orderStatusQuery = useQuery({
+    queryKey: ["checkout-order", processingOrderId],
+    queryFn: () => getOrder(processingOrderId ?? ""),
+    enabled: Boolean(processingOrderId) && isOrderProcessing,
+    refetchInterval: (query) => {
+      const order = query.state.data;
+
+      return order?.status === "PROCESSING" ? 2000 : false;
+    },
+  });
+
+  const checkoutMutation = useMutation({
+    mutationFn: postCheckout,
+    onSuccess: (order) => {
+      setCheckoutOrder(order);
+      checkoutIdempotency.syncAttemptStatus(order.status);
+    },
+    onError: (error) => {
+      checkoutIdempotency.syncAttemptStatus("FAILED");
+      setCheckoutOrder({
+        order_id: null,
+        status: "ERROR",
+        message:
+          error instanceof CheckoutApiError
+            ? error.message
+            : CHECKOUT_FALLBACK_ERROR_MESSAGE,
+      });
+    },
+    onSettled: () => {
+      isCheckoutSubmitLockedRef.current = false;
+      setIsSubmittingCheckout(false);
+    },
+  });
+
   useEffect(() => {
-    if (!checkoutOrder || checkoutOrder.status !== "PROCESSING") {
+    if (!orderStatusQuery.data) {
       return;
     }
 
-    let isPollingActive = true;
+    setCheckoutOrder(orderStatusQuery.data);
+    checkoutIdempotency.syncAttemptStatus(orderStatusQuery.data.status);
+  }, [orderStatusQuery.data, checkoutIdempotency]);
 
-    const pollOrderStatus = async () => {
-      try {
-        const order = await getOrder(checkoutOrder.order_id);
+  useEffect(() => {
+    if (!orderStatusQuery.error || !isOrderProcessing) {
+      return;
+    }
 
-        if (!isPollingActive) {
-          return;
-        }
-
-        setCheckoutOrder(order);
-        checkoutIdempotency.syncAttemptStatus(order.status);
-
-        if (order.status !== "PROCESSING") {
-          clearInterval(pollingInterval);
-        }
-      } catch {
-        if (!isPollingActive) {
-          return;
-        }
-
-        clearInterval(pollingInterval);
-        checkoutIdempotency.syncAttemptStatus("FAILED");
-        setCheckoutOrder({
-          order_id: null,
-          status: "ERROR",
-          message: CHECKOUT_FALLBACK_ERROR_MESSAGE,
-        });
-      }
-    };
-
-    const pollingInterval = window.setInterval(pollOrderStatus, 2000);
-
-    return () => {
-      isPollingActive = false;
-      clearInterval(pollingInterval);
-    };
-  }, [checkoutOrder, checkoutIdempotency]);
+    checkoutIdempotency.syncAttemptStatus("FAILED");
+    setCheckoutOrder({
+      order_id: null,
+      status: "ERROR",
+      message: CHECKOUT_FALLBACK_ERROR_MESSAGE,
+    });
+  }, [orderStatusQuery.error, isOrderProcessing, checkoutIdempotency]);
 
   const handleCheckoutSubmit = async () => {
     if (quantity < 1) {
@@ -128,33 +143,15 @@ export default function Checkout() {
     isCheckoutSubmitLockedRef.current = true;
     const idempotencyKey = checkoutIdempotency.getOrCreateKey();
 
-    try {
-      setIsSubmittingCheckout(true);
-      setCheckoutOrder(null);
-      checkoutIdempotency.syncAttemptStatus("SENDING");
+    setIsSubmittingCheckout(true);
+    setCheckoutOrder(null);
+    checkoutIdempotency.syncAttemptStatus("SENDING");
 
-      const order = await postCheckout({
-        productId: checkoutProduct.id,
-        quantity,
-        idempotencyKey,
-      });
-
-      setCheckoutOrder(order);
-      checkoutIdempotency.syncAttemptStatus(order.status);
-    } catch (error) {
-      checkoutIdempotency.syncAttemptStatus("FAILED");
-      setCheckoutOrder({
-        order_id: null,
-        status: "ERROR",
-        message:
-          error instanceof CheckoutApiError
-            ? error.message
-            : CHECKOUT_FALLBACK_ERROR_MESSAGE,
-      });
-    } finally {
-      isCheckoutSubmitLockedRef.current = false;
-      setIsSubmittingCheckout(false);
-    }
+    checkoutMutation.mutate({
+      productId: checkoutProduct.id,
+      quantity,
+      idempotencyKey,
+    });
   };
 
   return (

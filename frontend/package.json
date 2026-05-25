@@ -16,7 +16,8 @@
     "test:checkout-submit": "node ./scripts/check-checkout-submit.mjs",
     "test:checkout-summary": "node ./scripts/check-checkout-summary.mjs",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "test:checkout-react-query": "node ./scripts/check-checkout-react-query.mjs"
   },
   "dependencies": {
     "@react-router/node": "7.15.1",
