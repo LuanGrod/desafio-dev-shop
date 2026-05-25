@@ -145,17 +145,17 @@ Critérios de aceitação:
 [x] Se a quantidade for alterada após status final, a próxima tentativa usa uma nova chave.
 [x] A implementação não reutiliza uma chave antiga com payload diferente em nova compra.
 
-[ ] Task 12: Integrar TanStack Query no app, se ainda não estiver configurado
+[x] Task 12: Integrar TanStack Query no app, se ainda não estiver configurado
 
 Critérios de aceitação:
 
-[ ] Existe um `QueryClient` compartilhado para a aplicação.
-[ ] A árvore React está envolvida por `QueryClientProvider`.
-[ ] A mutation de checkout usa o cliente de API criado para `POST /checkout`.
-[ ] A query de status usa o cliente de API criado para `GET /orders/:order_id`.
-[ ] O polling é controlado por estado de pedido e não roda quando não há `order_id`.
-[ ] O polling não continua em background depois de status final.
-[ ] A configuração não introduz dependências novas desnecessárias, já que `@tanstack/react-query` está instalado.
+[x] Existe um `QueryClient` compartilhado para a aplicação.
+[x] A árvore React está envolvida por `QueryClientProvider`.
+[x] A mutation de checkout usa o cliente de API criado para `POST /checkout`.
+[x] A query de status usa o cliente de API criado para `GET /orders/:order_id`.
+[x] O polling é controlado por estado de pedido e não roda quando não há `order_id`.
+[x] O polling não continua em background depois de status final.
+[x] A configuração não introduz dependências novas desnecessárias, já que `@tanstack/react-query` está instalado.
 
 [ ] Task 13: Garantir acessibilidade básica da experiência
 
