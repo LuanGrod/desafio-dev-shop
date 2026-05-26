@@ -22,7 +22,7 @@ export interface GetOrderOutput {
 
 @Injectable()
 export class GetOrderUseCase {
-  constructor(private readonly ordersRepository: OrdersRepository) { }
+  constructor(private readonly ordersRepository: OrdersRepository) {}
 
   execute(orderId: number): GetOrderOutput {
     if (!Number.isInteger(orderId) || orderId <= 0) {

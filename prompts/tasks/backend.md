@@ -261,7 +261,7 @@ O endpoint de checkout deve criar pedidos com status inicial `PROCESSING`, permi
 
 ## Tasks de Checkout
 
-[ ] Task 11: Mapear o contrato do endpoint principal de checkout
+[x] Task 11: Mapear o contrato do endpoint principal de checkout
 
 Arquivos para criar:
 
@@ -280,20 +280,20 @@ Arquivos para consultar:
 
 Criterios de aceitacao:
 
-[ ] O agente confirmou que o endpoint esperado e `POST /checkout`.
-[ ] O agente confirmou que uma tentativa valida deve retornar `202 Accepted`.
-[ ] O agente confirmou que o request deve receber `items` como lista com `product_id` e `quantity`.
-[ ] O agente confirmou que o header `Idempotency-Key` e obrigatorio.
-[ ] O agente confirmou que a resposta de sucesso inicial deve conter `order_id`, `status: "PROCESSING"` e `message: "Pedido recebido e está sendo processado."`.
-[ ] O agente confirmou que o pedido criado pelo checkout deve poder ser consultado depois via `GET /orders/:order_id`.
-[ ] O agente confirmou que estoque, idempotencia, pedidos e processamento devem funcionar em memoria, sem banco real, fila real, pagamento, Docker ou ERP externo.
-[ ] O agente confirmou quais mensagens e status HTTP devem ser usados para payload invalido, quantidade invalida, produto inexistente, falta de idempotencia, estoque insuficiente e reutilizacao indevida da chave.
+[x] O agente confirmou que o endpoint esperado e `POST /checkout`.
+[x] O agente confirmou que uma tentativa valida deve retornar `202 Accepted`.
+[x] O agente confirmou que o request deve receber `items` como lista com `product_id` e `quantity`.
+[x] O agente confirmou que o header `Idempotency-Key` e obrigatorio.
+[x] O agente confirmou que a resposta de sucesso inicial deve conter `order_id`, `status: "PROCESSING"` e `message: "Pedido recebido e está sendo processado."`.
+[x] O agente confirmou que o pedido criado pelo checkout deve poder ser consultado depois via `GET /orders/:order_id`.
+[x] O agente confirmou que estoque, idempotencia, pedidos e processamento devem funcionar em memoria, sem banco real, fila real, pagamento, Docker ou ERP externo.
+[x] O agente confirmou quais mensagens e status HTTP devem ser usados para payload invalido, quantidade invalida, produto inexistente, falta de idempotencia, estoque insuficiente e reutilizacao indevida da chave.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test:e2e` dentro de `backend` para confirmar o estado inicial antes dos testes de checkout.
+[x] Rodar `npm run test:e2e` dentro de `backend` para confirmar o estado inicial antes dos testes de checkout.
 
-[ ] Task 12: Criar teste e2e geral do fluxo feliz de checkout
+[x] Task 12: Criar teste e2e geral do fluxo feliz de checkout
 
 Arquivos para criar:
 
@@ -305,19 +305,19 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] Existe um teste e2e que chama `POST /checkout` com header `Idempotency-Key` e payload `{ "items": [{ "product_id": 1, "quantity": 2 }] }`.
-[ ] O teste valida `202 Accepted`.
-[ ] O teste valida body com `order_id` numerico positivo, `status: "PROCESSING"` e `message: "Pedido recebido e está sendo processado."`.
-[ ] O teste consulta `GET /orders/:order_id` usando o `order_id` retornado.
-[ ] O teste valida que o pedido consultado existe e retorna `order_id`, `status` e `message` coerentes com o estado atual do pedido.
-[ ] O teste deixa claro que este e o fluxo principal do backend e que o processamento final sera detalhado em tasks posteriores.
-[ ] O teste limpa o estado em memoria antes de cada caso, reaproveitando ou evoluindo o mecanismo de reset ja usado em `backend/test/orders.e2e-spec.ts`.
+[x] Existe um teste e2e que chama `POST /checkout` com header `Idempotency-Key` e payload `{ "items": [{ "product_id": 1, "quantity": 2 }] }`.
+[x] O teste valida `202 Accepted`.
+[x] O teste valida body com `order_id` numerico positivo, `status: "PROCESSING"` e `message: "Pedido recebido e está sendo processado."`.
+[x] O teste consulta `GET /orders/:order_id` usando o `order_id` retornado.
+[x] O teste valida que o pedido consultado existe e retorna `order_id`, `status` e `message` coerentes com o estado atual do pedido.
+[x] O teste deixa claro que este e o fluxo principal do backend e que o processamento final sera detalhado em tasks posteriores.
+[x] O teste limpa o estado em memoria antes de cada caso, reaproveitando ou evoluindo o mecanismo de reset ja usado em `backend/test/orders.e2e-spec.ts`.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test:e2e` dentro de `backend` e confirmar que o novo teste falha pelo motivo esperado: `POST /checkout` ainda nao existe.
+[x] Rodar `npm run test:e2e` dentro de `backend` e confirmar que o novo teste falha pelo motivo esperado: `POST /checkout` ainda nao existe.
 
-[ ] Task 13: Criar os tipos de dominio para checkout e produto
+[x] Task 13: Criar os tipos de dominio para checkout e produto
 
 Arquivos para criar:
 
@@ -330,18 +330,18 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] Existe um tipo de item de checkout com `product_id` e `quantity`, alinhado a `prompts/api-contract.md`.
-[ ] Existe um tipo de request de checkout com `items`.
-[ ] Existe um tipo de produto em memoria com pelo menos `id`, `name`, `price` e `stock`.
-[ ] O tipo de pedido passa a aceitar, se necessario, `idempotency_key`, `created_at` e metadados simples de processamento sem quebrar os testes existentes de `GET /orders/:order_id`.
-[ ] Os tipos de dominio nao dependem de decorators HTTP, `Request`, `Response`, `supertest` ou detalhes de controller.
-[ ] Os campos expostos no contrato preservam snake_case onde o contrato exige, especialmente `product_id` e `order_id`.
+[x] Existe um tipo de item de checkout com `product_id` e `quantity`, alinhado a `prompts/api-contract.md`.
+[x] Existe um tipo de request de checkout com `items`.
+[x] Existe um tipo de produto em memoria com pelo menos `id`, `name`, `price` e `stock`.
+[x] O tipo de pedido passa a aceitar, se necessario, `idempotency_key`, `created_at` e metadados simples de processamento sem quebrar os testes existentes de `GET /orders/:order_id`.
+[x] Os tipos de dominio nao dependem de decorators HTTP, `Request`, `Response`, `supertest` ou detalhes de controller.
+[x] Os campos expostos no contrato preservam snake_case onde o contrato exige, especialmente `product_id` e `order_id`.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test` dentro de `backend` para garantir que os tipos compilam dentro da suite unit.
+[x] Rodar `npm run test` dentro de `backend` para garantir que os tipos compilam dentro da suite unit.
 
-[ ] Task 14: Criar repository em memoria para produtos e estoque
+[x] Task 14: Criar repository em memoria para produtos e estoque
 
 Arquivos para criar:
 
@@ -354,19 +354,19 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] Existe um repository in-memory de produtos com pelo menos o produto `id: 1`, nome `Capinha Clear Case iPhone 15`, preco `79.9` e estoque inicial controlado.
-[ ] O repository expoe metodo para buscar produto por `product_id`.
-[ ] O repository expoe metodo para validar se ha estoque suficiente para uma quantidade.
-[ ] O repository expoe metodo para decrementar estoque de forma simples quando o pedido for aprovado.
-[ ] O repository expoe metodo de `reset` ou `seed` para testes.
-[ ] O repository nao usa banco de dados real, ORM, Docker ou dependencias externas.
-[ ] A implementacao evita expor referencias mutaveis internas para os testes ou usecases.
+[x] Existe um repository in-memory de produtos com pelo menos o produto `id: 1`, nome `Capinha Clear Case iPhone 15`, preco `79.9` e estoque inicial controlado.
+[x] O repository expoe metodo para buscar produto por `product_id`.
+[x] O repository expoe metodo para validar se ha estoque suficiente para uma quantidade.
+[x] O repository expoe metodo para decrementar estoque de forma simples quando o pedido for aprovado.
+[x] O repository expoe metodo de `reset` ou `seed` para testes.
+[x] O repository nao usa banco de dados real, ORM, Docker ou dependencias externas.
+[x] A implementacao evita expor referencias mutaveis internas para os testes ou usecases.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test` dentro de `backend`.
+[x] Rodar `npm run test` dentro de `backend`.
 
-[ ] Task 15: Criar validacao inicial do payload de checkout
+[x] Task 15: Criar validacao inicial do payload de checkout
 
 Arquivos para criar:
 
@@ -378,20 +378,20 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] Existe validacao para ausencia de `items`, retornando erro de negocio com mensagem `Dados da compra inválidos.`.
-[ ] Existe validacao para `items` vazio, retornando erro de negocio com mensagem `Dados da compra inválidos.`.
-[ ] Existe validacao para payload em formato diferente do contrato, retornando erro de negocio com mensagem `Dados da compra inválidos.`.
-[ ] Existe validacao para `product_id` ausente, invalido ou inexistente, retornando erro amigavel adequado.
-[ ] Existe validacao para `quantity` ausente, nao inteira ou menor ou igual a zero, retornando mensagem `Informe uma quantidade válida.`.
-[ ] A validacao suporta o formato de lista em `items`, mesmo que a implementacao aceite inicialmente apenas um item.
-[ ] O usecase nao conhece HTTP, controller ou `supertest`; ele apenas sinaliza erros de negocio claros para a camada HTTP.
+[x] Existe validacao para ausencia de `items`, retornando erro de negocio com mensagem `Dados da compra inválidos.`.
+[x] Existe validacao para `items` vazio, retornando erro de negocio com mensagem `Dados da compra inválidos.`.
+[x] Existe validacao para payload em formato diferente do contrato, retornando erro de negocio com mensagem `Dados da compra inválidos.`.
+[x] Existe validacao para `product_id` ausente, invalido ou inexistente, retornando erro amigavel adequado.
+[x] Existe validacao para `quantity` ausente, nao inteira ou menor ou igual a zero, retornando mensagem `Informe uma quantidade válida.`.
+[x] A validacao suporta o formato de lista em `items`, mesmo que a implementacao aceite inicialmente apenas um item.
+[x] O usecase nao conhece HTTP, controller ou `supertest`; ele apenas sinaliza erros de negocio claros para a camada HTTP.
 
 Validacao antes de seguir:
 
-[ ] Criar ou ajustar testes unitarios focados para esta validacao, se houver suite unit adequada.
-[ ] Rodar `npm run test` dentro de `backend`.
+[x] Criar ou ajustar testes unitarios focados para esta validacao, se houver suite unit adequada.
+[x] Rodar `npm run test` dentro de `backend`.
 
-[ ] Task 16: Criar repository em memoria para idempotencia
+[x] Task 16: Criar repository em memoria para idempotencia
 
 Arquivos para criar:
 
@@ -403,19 +403,19 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] Existe um repository in-memory que armazena entradas por `Idempotency-Key`.
-[ ] Cada entrada guarda a chave, uma assinatura ou copia normalizada do payload original e o `order_id` criado.
-[ ] O repository permite consultar uma entrada por chave.
-[ ] O repository permite salvar uma nova entrada de forma simples.
-[ ] O repository permite resetar o estado entre testes.
-[ ] A comparacao de payloads iguais nao depende da ordem de propriedades do JSON bruto.
-[ ] O repository nao traduz regras HTTP; ele apenas preserva e consulta dados de idempotencia.
+[x] Existe um repository in-memory que armazena entradas por `Idempotency-Key`.
+[x] Cada entrada guarda a chave, uma assinatura ou copia normalizada do payload original e o `order_id` criado.
+[x] O repository permite consultar uma entrada por chave.
+[x] O repository permite salvar uma nova entrada de forma simples.
+[x] O repository permite resetar o estado entre testes.
+[x] A comparacao de payloads iguais nao depende da ordem de propriedades do JSON bruto.
+[x] O repository nao traduz regras HTTP; ele apenas preserva e consulta dados de idempotencia.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test` dentro de `backend`.
+[x] Rodar `npm run test` dentro de `backend`.
 
-[ ] Task 17: Criar usecase de criacao inicial de pedido de checkout
+[x] Task 17: Criar usecase de criacao inicial de pedido de checkout
 
 Arquivos para criar:
 
@@ -428,20 +428,20 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] O usecase recebe payload validado e `Idempotency-Key`.
-[ ] O usecase rejeita ausencia de `Idempotency-Key` com mensagem `Não foi possível identificar a tentativa de compra. Tente novamente.`.
-[ ] O usecase valida estoque inicial antes de criar o pedido.
-[ ] Quando nao ha estoque suficiente no momento do `POST /checkout`, o usecase sinaliza conflito com mensagem `Não há estoque suficiente para essa quantidade.` e nao cria pedido.
-[ ] Quando a tentativa e valida, o usecase cria um pedido em memoria com `status: "PROCESSING"` e mensagem `Pedido recebido e está sendo processado.`.
-[ ] O `OrdersRepository` passa a conseguir gerar ou persistir `order_id` numerico positivo sem depender dos testes semearem IDs manualmente.
-[ ] O pedido salvo preserva os itens recebidos e a chave de idempotencia.
-[ ] O usecase retorna somente os dados necessarios para a resposta HTTP inicial: `order_id`, `status` e `message`.
+[x] O usecase recebe payload validado e `Idempotency-Key`.
+[x] O usecase rejeita ausencia de `Idempotency-Key` com mensagem `Não foi possível identificar a tentativa de compra. Tente novamente.`.
+[x] O usecase valida estoque inicial antes de criar o pedido.
+[x] Quando nao ha estoque suficiente no momento do `POST /checkout`, o usecase sinaliza conflito com mensagem `Não há estoque suficiente para essa quantidade.` e nao cria pedido.
+[x] Quando a tentativa e valida, o usecase cria um pedido em memoria com `status: "PROCESSING"` e mensagem `Pedido recebido e está sendo processado.`.
+[x] O `OrdersRepository` passa a conseguir gerar ou persistir `order_id` numerico positivo sem depender dos testes semearem IDs manualmente.
+[x] O pedido salvo preserva os itens recebidos e a chave de idempotencia.
+[x] O usecase retorna somente os dados necessarios para a resposta HTTP inicial: `order_id`, `status` e `message`.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test` dentro de `backend`.
+[x] Rodar `npm run test` dentro de `backend`.
 
-[ ] Task 18: Implementar comportamento idempotente do checkout
+[x] Task 18: Implementar comportamento idempotente do checkout
 
 Arquivos para alterar:
 
@@ -451,18 +451,18 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] Existe teste e2e para repetir `POST /checkout` com a mesma `Idempotency-Key` e o mesmo payload.
-[ ] A repeticao com a mesma chave e mesmo payload retorna o mesmo `order_id`, sem criar pedido duplicado.
-[ ] A resposta idempotente retorna o status e mensagem atuais do pedido ja existente.
-[ ] Existe teste e2e para reutilizar a mesma `Idempotency-Key` com payload diferente.
-[ ] A reutilizacao com payload diferente retorna `400 Bad Request` com mensagem amigavel de validacao.
-[ ] O repository de idempotencia e resetado entre testes para evitar vazamento de dados.
+[x] Existe teste e2e para repetir `POST /checkout` com a mesma `Idempotency-Key` e o mesmo payload.
+[x] A repeticao com a mesma chave e mesmo payload retorna o mesmo `order_id`, sem criar pedido duplicado.
+[x] A resposta idempotente retorna o status e mensagem atuais do pedido ja existente.
+[x] Existe teste e2e para reutilizar a mesma `Idempotency-Key` com payload diferente.
+[x] A reutilizacao com payload diferente retorna `400 Bad Request` com mensagem amigavel de validacao.
+[x] O repository de idempotencia e resetado entre testes para evitar vazamento de dados.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test:e2e` dentro de `backend` e confirmar que os testes de idempotencia passam.
+[x] Rodar `npm run test:e2e` dentro de `backend` e confirmar que os testes de idempotencia passam.
 
-[ ] Task 19: Criar controller e modulo de checkout
+[x] Task 19: Criar controller e modulo de checkout
 
 Arquivos para criar:
 
@@ -477,23 +477,23 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] O controller registra a rota `POST /checkout`.
-[ ] O controller le o header `Idempotency-Key`.
-[ ] O controller le o body no formato do contrato.
-[ ] O controller chama o usecase de criacao de checkout sem acessar diretamente os Maps internos dos repositories.
-[ ] Tentativa valida retorna `202 Accepted` com `order_id`, `status` e `message`.
-[ ] Falta de `Idempotency-Key` retorna erro HTTP adequado com `{ "message": "Não foi possível identificar a tentativa de compra. Tente novamente." }`.
-[ ] Payload invalido retorna erro HTTP adequado com mensagem amigavel, sem stack trace.
-[ ] Estoque insuficiente inicial retorna `409 Conflict` com `{ "message": "Não há estoque suficiente para essa quantidade." }`.
-[ ] `CheckoutModule` registra controller, usecases e repositories necessarios, reaproveitando `OrdersRepository` em vez de criar armazenamento paralelo de pedidos.
-[ ] `AppModule` importa `CheckoutModule`.
+[x] O controller registra a rota `POST /checkout`.
+[x] O controller le o header `Idempotency-Key`.
+[x] O controller le o body no formato do contrato.
+[x] O controller chama o usecase de criacao de checkout sem acessar diretamente os Maps internos dos repositories.
+[x] Tentativa valida retorna `202 Accepted` com `order_id`, `status` e `message`.
+[x] Falta de `Idempotency-Key` retorna erro HTTP adequado com `{ "message": "Não foi possível identificar a tentativa de compra. Tente novamente." }`.
+[x] Payload invalido retorna erro HTTP adequado com mensagem amigavel, sem stack trace.
+[x] Estoque insuficiente inicial retorna `409 Conflict` com `{ "message": "Não há estoque suficiente para essa quantidade." }`.
+[x] `CheckoutModule` registra controller, usecases e repositories necessarios, reaproveitando `OrdersRepository` em vez de criar armazenamento paralelo de pedidos.
+[x] `AppModule` importa `CheckoutModule`.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test:e2e` dentro de `backend`.
-[ ] Confirmar que o teste geral criado na Task 12 passa ou identificar exatamente o proximo ajuste necessario.
+[x] Rodar `npm run test:e2e` dentro de `backend`.
+[x] Confirmar que o teste geral criado na Task 12 passa ou identificar exatamente o proximo ajuste necessario.
 
-[ ] Task 20: Cobrir validacoes HTTP de checkout com testes e2e
+[x] Task 20: Cobrir validacoes HTTP de checkout com testes e2e
 
 Arquivos para alterar:
 
@@ -504,22 +504,22 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] Existe teste para ausencia de `Idempotency-Key`, retornando mensagem `Não foi possível identificar a tentativa de compra. Tente novamente.`.
-[ ] Existe teste para ausencia de `items`, retornando mensagem `Dados da compra inválidos.`.
-[ ] Existe teste para `items` vazio, retornando mensagem `Dados da compra inválidos.`.
-[ ] Existe teste para payload fora do formato do contrato, retornando mensagem `Dados da compra inválidos.`.
-[ ] Existe teste para produto inexistente em `product_id`, retornando erro amigavel e codigo HTTP adequado.
-[ ] Existe teste para `quantity` ausente.
-[ ] Existe teste para `quantity` nao inteira.
-[ ] Existe teste para `quantity` menor ou igual a zero.
-[ ] Os cenarios de quantidade invalida retornam `{ "message": "Informe uma quantidade válida." }`.
-[ ] Nenhum erro de validacao retorna stack trace, classe de erro, caminho interno, mensagem tecnica ou detalhes de implementacao.
+[x] Existe teste para ausencia de `Idempotency-Key`, retornando mensagem `Não foi possível identificar a tentativa de compra. Tente novamente.`.
+[x] Existe teste para ausencia de `items`, retornando mensagem `Dados da compra inválidos.`.
+[x] Existe teste para `items` vazio, retornando mensagem `Dados da compra inválidos.`.
+[x] Existe teste para payload fora do formato do contrato, retornando mensagem `Dados da compra inválidos.`.
+[x] Existe teste para produto inexistente em `product_id`, retornando erro amigavel e codigo HTTP adequado.
+[x] Existe teste para `quantity` ausente.
+[x] Existe teste para `quantity` nao inteira.
+[x] Existe teste para `quantity` menor ou igual a zero.
+[x] Os cenarios de quantidade invalida retornam `{ "message": "Informe uma quantidade válida." }`.
+[x] Nenhum erro de validacao retorna stack trace, classe de erro, caminho interno, mensagem tecnica ou detalhes de implementacao.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test:e2e` dentro de `backend`.
+[x] Rodar `npm run test:e2e` dentro de `backend`.
 
-[ ] Task 21: Criar processamento assincrono simulado do pedido
+[x] Task 21: Criar processamento assincrono simulado do pedido
 
 Arquivos para criar:
 
@@ -535,20 +535,20 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] A criacao valida do checkout agenda processamento assincrono em memoria apos criar o pedido `PROCESSING`.
-[ ] Enquanto o processamento ainda nao terminou, `GET /orders/:order_id` retorna `PROCESSING`.
-[ ] Ao processar, o servico verifica novamente o estoque antes de aprovar.
-[ ] Se ainda houver estoque suficiente na segunda verificacao, o pedido passa para `APPROVED`.
-[ ] Ao aprovar, o estoque em memoria e decrementado.
-[ ] Se nao houver estoque suficiente na segunda verificacao, o pedido passa para `REJECTED` com mensagem `Não há estoque suficiente para essa quantidade.`.
-[ ] O processamento nao usa fila real, mensageria externa, banco real ou ERP real.
-[ ] Os testes conseguem controlar atrasos de processamento para observar `PROCESSING` e depois status final de forma deterministica.
+[x] A criacao valida do checkout agenda processamento assincrono em memoria apos criar o pedido `PROCESSING`.
+[x] Enquanto o processamento ainda nao terminou, `GET /orders/:order_id` retorna `PROCESSING`.
+[x] Ao processar, o servico verifica novamente o estoque antes de aprovar.
+[x] Se ainda houver estoque suficiente na segunda verificacao, o pedido passa para `APPROVED`.
+[x] Ao aprovar, o estoque em memoria e decrementado.
+[x] Se nao houver estoque suficiente na segunda verificacao, o pedido passa para `REJECTED` com mensagem `Não há estoque suficiente para essa quantidade.`.
+[x] O processamento nao usa fila real, mensageria externa, banco real ou ERP real.
+[x] Os testes conseguem controlar atrasos de processamento para observar `PROCESSING` e depois status final de forma deterministica.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test:e2e` dentro de `backend`.
+[x] Rodar `npm run test:e2e` dentro de `backend`.
 
-[ ] Task 22: Cobrir transicao para `APPROVED` no fluxo de checkout
+[x] Task 22: Cobrir transicao para `APPROVED` no fluxo de checkout
 
 Arquivos para alterar:
 
@@ -559,18 +559,18 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] Existe teste e2e que cria um checkout valido com estoque suficiente.
-[ ] O teste aguarda o processamento simulado de forma controlada.
-[ ] O teste consulta `GET /orders/:order_id` ate obter `status: "APPROVED"` ou usa um mecanismo deterministico equivalente.
-[ ] A resposta final contem `order_id`, `status: "APPROVED"` e `message: "Compra aprovada com sucesso."`.
-[ ] O teste confirma que a consulta por `GET /orders/:order_id` reflete a atualizacao feita pelo processamento.
-[ ] O teste nao depende de sleeps longos ou temporizacoes frageis.
+[x] Existe teste e2e que cria um checkout valido com estoque suficiente.
+[x] O teste aguarda o processamento simulado de forma controlada.
+[x] O teste consulta `GET /orders/:order_id` ate obter `status: "APPROVED"` ou usa um mecanismo deterministico equivalente.
+[x] A resposta final contem `order_id`, `status: "APPROVED"` e `message: "Compra aprovada com sucesso."`.
+[x] O teste confirma que a consulta por `GET /orders/:order_id` reflete a atualizacao feita pelo processamento.
+[x] O teste nao depende de sleeps longos ou temporizacoes frageis.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test:e2e` dentro de `backend`.
+[x] Rodar `npm run test:e2e` dentro de `backend`.
 
-[ ] Task 23: Cobrir rejeicao por estoque insuficiente no checkout
+[x] Task 23: Cobrir rejeicao por estoque insuficiente no checkout
 
 Arquivos para alterar:
 
@@ -580,18 +580,18 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] Existe teste e2e para estoque insuficiente ja no `POST /checkout`.
-[ ] Quando o estoque inicial e insuficiente, o endpoint retorna `409 Conflict` com `{ "message": "Não há estoque suficiente para essa quantidade." }`.
-[ ] O teste confirma que nenhum pedido e criado quando o estoque inicial e insuficiente.
-[ ] Existe teste e2e para estoque ficar insuficiente entre a criacao do pedido e o processamento.
-[ ] Quando o estoque fica insuficiente durante o processamento, o pedido criado inicialmente permanece consultavel.
-[ ] A consulta final via `GET /orders/:order_id` retorna `status: "REJECTED"` e `message: "Não há estoque suficiente para essa quantidade."`.
+[x] Existe teste e2e para estoque insuficiente ja no `POST /checkout`.
+[x] Quando o estoque inicial e insuficiente, o endpoint retorna `409 Conflict` com `{ "message": "Não há estoque suficiente para essa quantidade." }`.
+[x] O teste confirma que nenhum pedido e criado quando o estoque inicial e insuficiente.
+[x] Existe teste e2e para estoque ficar insuficiente entre a criacao do pedido e o processamento.
+[x] Quando o estoque fica insuficiente durante o processamento, o pedido criado inicialmente permanece consultavel.
+[x] A consulta final via `GET /orders/:order_id` retorna `status: "REJECTED"` e `message: "Não há estoque suficiente para essa quantidade."`.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test:e2e` dentro de `backend`.
+[x] Rodar `npm run test:e2e` dentro de `backend`.
 
-[ ] Task 24: Implementar retries e timeout simulado de ERP
+[x] Task 24: Implementar retries e timeout simulado de ERP
 
 Arquivos para alterar:
 
@@ -602,21 +602,21 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] O processamento le configuracoes simples de ambiente ou valores padrao para `ERP_SIMULATE_TIMEOUT`, `ERP_PROCESSING_DELAY_MS`, `ERP_PROCESSING_TIMEOUT_MS`, `ERP_MAX_RETRIES` e `ERP_RETRY_DELAY_MS`.
-[ ] Quando `ERP_SIMULATE_TIMEOUT=true`, cada tentativa simula exceder o timeout esperado.
-[ ] Enquanto ainda houver retries disponiveis, o pedido permanece `PROCESSING`.
-[ ] O pedido mantem em memoria a quantidade de tentativas realizadas.
-[ ] Quando os retries sao esgotados, o pedido passa para `REJECTED`.
-[ ] A mensagem final de rejeicao por timeout e amigavel e indica que nao foi possivel processar o pedido apos novas tentativas.
-[ ] Existe teste e2e ou unitario controlado que cobre retries esgotados sem deixar a suite lenta.
-[ ] A implementacao nao retorna stack trace nem detalhes tecnicos do ERP simulado ao usuario final.
+[x] O processamento le configuracoes simples de ambiente ou valores padrao para `ERP_SIMULATE_TIMEOUT`, `ERP_PROCESSING_DELAY_MS`, `ERP_PROCESSING_TIMEOUT_MS`, `ERP_MAX_RETRIES` e `ERP_RETRY_DELAY_MS`.
+[x] Quando `ERP_SIMULATE_TIMEOUT=true`, cada tentativa simula exceder o timeout esperado.
+[x] Enquanto ainda houver retries disponiveis, o pedido permanece `PROCESSING`.
+[x] O pedido mantem em memoria a quantidade de tentativas realizadas.
+[x] Quando os retries sao esgotados, o pedido passa para `REJECTED`.
+[x] A mensagem final de rejeicao por timeout e amigavel e indica que nao foi possivel processar o pedido apos novas tentativas.
+[x] Existe teste e2e ou unitario controlado que cobre retries esgotados sem deixar a suite lenta.
+[x] A implementacao nao retorna stack trace nem detalhes tecnicos do ERP simulado ao usuario final.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test` dentro de `backend`.
-[ ] Rodar `npm run test:e2e` dentro de `backend`.
+[x] Rodar `npm run test` dentro de `backend`.
+[x] Rodar `npm run test:e2e` dentro de `backend`.
 
-[ ] Task 25: Revisar contrato final e validacoes tecnicas do checkout
+[x] Task 25: Revisar contrato final e validacoes tecnicas do checkout
 
 Arquivos para criar:
 
@@ -628,22 +628,22 @@ Arquivos para alterar:
 
 Criterios de aceitacao:
 
-[ ] `POST /checkout` recebe `items` e `Idempotency-Key` conforme `prompts/api-contract.md`.
-[ ] `POST /checkout` retorna `202 Accepted` para tentativa valida aceita para processamento.
-[ ] A resposta inicial contem `order_id`, `status: "PROCESSING"` e `message: "Pedido recebido e está sendo processado."`.
-[ ] O mesmo `Idempotency-Key` com o mesmo payload nao cria pedido duplicado.
-[ ] O mesmo `Idempotency-Key` com payload diferente retorna erro amigavel.
-[ ] Payloads invalidos retornam codigos HTTP adequados e mensagens amigaveis.
-[ ] Estoque insuficiente antes da criacao retorna `409 Conflict` e nao cria pedido.
-[ ] Pedido aprovado decrementa estoque em memoria.
-[ ] Pedido rejeitado por estoque ou timeout fica consultavel por `GET /orders/:order_id`.
-[ ] `GET /orders/:order_id` continua passando todos os cenarios ja implementados na etapa anterior.
-[ ] Nenhuma resposta retorna stack trace, classe de erro, caminho interno, mensagem tecnica ou detalhes de implementacao.
-[ ] A implementacao permanece em memoria e nao adiciona banco real, autenticacao, pagamento, Docker, fila real ou integracao externa.
+[x] `POST /checkout` recebe `items` e `Idempotency-Key` conforme `prompts/api-contract.md`.
+[x] `POST /checkout` retorna `202 Accepted` para tentativa valida aceita para processamento.
+[x] A resposta inicial contem `order_id`, `status: "PROCESSING"` e `message: "Pedido recebido e está sendo processado."`.
+[x] O mesmo `Idempotency-Key` com o mesmo payload nao cria pedido duplicado.
+[x] O mesmo `Idempotency-Key` com payload diferente retorna erro amigavel.
+[x] Payloads invalidos retornam codigos HTTP adequados e mensagens amigaveis.
+[x] Estoque insuficiente antes da criacao retorna `409 Conflict` e nao cria pedido.
+[x] Pedido aprovado decrementa estoque em memoria.
+[x] Pedido rejeitado por estoque ou timeout fica consultavel por `GET /orders/:order_id`.
+[x] `GET /orders/:order_id` continua passando todos os cenarios ja implementados na etapa anterior.
+[x] Nenhuma resposta retorna stack trace, classe de erro, caminho interno, mensagem tecnica ou detalhes de implementacao.
+[x] A implementacao permanece em memoria e nao adiciona banco real, autenticacao, pagamento, Docker, fila real ou integracao externa.
 
 Validacao antes de seguir:
 
-[ ] Rodar `npm run test` dentro de `backend`.
-[ ] Rodar `npm run test:e2e` dentro de `backend`.
-[ ] Rodar `npm run build` dentro de `backend`.
-[ ] Se o lint for executado, rodar `npm run lint` dentro de `backend` e corrigir problemas relevantes sem refatoracoes fora do escopo.
+[x] Rodar `npm run test` dentro de `backend`.
+[x] Rodar `npm run test:e2e` dentro de `backend`.
+[x] Rodar `npm run build` dentro de `backend`.
+[x] Se o lint for executado, rodar `npm run lint` dentro de `backend` e corrigir problemas relevantes sem refatoracoes fora do escopo.

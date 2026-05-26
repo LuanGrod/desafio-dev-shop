@@ -10,4 +10,7 @@ export interface Order {
   status: OrderStatus;
   message: string;
   items: OrderItem[];
+  idempotency_key?: string;
+  created_at?: Date;
+  processing_attempts?: number;
 }
