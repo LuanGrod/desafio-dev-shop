@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { configureCors } from '../src/cors';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -13,6 +14,7 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    configureCors(app);
     await app.init();
   });
 
@@ -21,6 +23,15 @@ describe('AppController (e2e)', () => {
       .get('/')
       .expect(200)
       .expect('Hello World!');
+  });
+
+  it('allows browser requests from any frontend origin during the challenge', async () => {
+    await request(app.getHttpServer())
+      .options('/checkout')
+      .set('Origin', 'http://localhost:49152')
+      .set('Access-Control-Request-Method', 'POST')
+      .expect(204)
+      .expect('access-control-allow-origin', '*');
   });
 
   afterEach(async () => {

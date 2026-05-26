@@ -21,7 +21,7 @@ export class CheckoutProcessingService implements OnModuleDestroy {
   constructor(
     private readonly ordersRepository: OrdersRepository,
     private readonly productsRepository: ProductsRepository,
-  ) { }
+  ) {}
 
   schedule(orderId: number): void {
     this.scheduleWithDelay(
@@ -55,7 +55,7 @@ export class CheckoutProcessingService implements OnModuleDestroy {
         this.scheduleWithDelay(
           orderId,
           DEFAULT_PROCESSING_TIMEOUT_MS +
-          this.readMilliseconds('ERP_RETRY_DELAY_MS', DEFAULT_RETRY_DELAY_MS),
+            this.readMilliseconds('ERP_RETRY_DELAY_MS', DEFAULT_RETRY_DELAY_MS),
         );
         return;
       }
