@@ -1,18 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
+import { createIdempotencyKey } from "~/utils/idempotency";
 
 type FinalOrderStatus = "APPROVED" | "REJECTED";
 type CheckoutAttemptStatus = "SENDING" | "PROCESSING" | "FAILED" | FinalOrderStatus;
-
-function createFallbackIdempotencyKey() {
-  const timestampPart = Date.now().toString(36);
-  const randomPart = Math.random().toString(36).slice(2);
-
-  return `checkout-${timestampPart}-${randomPart}`;
-}
-
-export function createCheckoutIdempotencyKey() {
-  return globalThis.crypto?.randomUUID?.() ?? createFallbackIdempotencyKey();
-}
 
 export function useCheckoutIdempotency(itemsSignature: string) {
   const currentKeyRef = useRef<string | null>(null);
@@ -45,7 +35,7 @@ export function useCheckoutIdempotency(itemsSignature: string) {
     }
 
     if (currentKeyRef.current === null) {
-      currentKeyRef.current = createCheckoutIdempotencyKey();
+      currentKeyRef.current = createIdempotencyKey();
       currentKeyItemsSignatureRef.current = itemsSignature;
     }
 

@@ -13,7 +13,7 @@ export const queryClient = new QueryClient({
   },
 });
 
-export function CheckoutQueryProvider({ children }: { children: ReactNode }) {
+export function ProviderReactQuery({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );

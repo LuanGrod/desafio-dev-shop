@@ -1,3 +1,5 @@
+import { buildApiUrl, extractUserMessage, GenericApiError, isSafeUserMessage, readJson, type ApiErrorBody } from "~/utils/api";
+
 export const CHECKOUT_FALLBACK_ERROR_MESSAGE =
   "Não foi possível concluir a compra agora. Tente novamente em instantes.";
 
@@ -15,61 +17,15 @@ type PostCheckoutParams = {
   idempotencyKey: string;
 };
 
-type ApiErrorBody = {
-  message?: unknown;
-};
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000")
-  .replace(/\/$/, "");
-
-export class CheckoutApiError extends Error {
-  readonly status?: number;
-
+export class CheckoutApiError extends GenericApiError {
   constructor(message = CHECKOUT_FALLBACK_ERROR_MESSAGE, status?: number) {
-    super(message);
-    this.name = "CheckoutApiError";
-    this.status = status;
+    super("CheckoutApiError", message, status);
   }
-}
-
-function buildApiUrl(path: string) {
-  return `${API_BASE_URL}${path}`;
 }
 
 function isOrderStatus(status: unknown): status is OrderStatus {
   return status === "PROCESSING" || status === "APPROVED" || status === "REJECTED";
-}
-
-function isSafeUserMessage(message: unknown): message is string {
-  if (typeof message !== "string") {
-    return false;
-  }
-
-  const trimmedMessage = message.trim();
-  const technicalPattern =
-    /(?:stack trace|exception|syntaxerror|referenceerror|typeerror|typeorm|prisma|nestjs|internal server error|^error:|\bat\s+\S+\s+\()/i;
-
-  return (
-    trimmedMessage.length > 0 &&
-    trimmedMessage.length <= 220 &&
-    !technicalPattern.test(trimmedMessage)
-  );
-}
-
-async function readJson(response: Response): Promise<unknown> {
-  try {
-    return await response.json();
-  } catch {
-    return null;
-  }
-}
-
-function extractUserMessage(body: unknown) {
-  const message = (body as ApiErrorBody | null)?.message;
-
-  return isSafeUserMessage(message)
-    ? message.trim()
-    : CHECKOUT_FALLBACK_ERROR_MESSAGE;
 }
 
 function parseOrderResponse(body: unknown): CheckoutOrderResponse | null {
@@ -106,7 +62,7 @@ async function requestOrder(path: string, init?: RequestInit) {
   const body = await readJson(response);
 
   if (!response.ok) {
-    const message = extractUserMessage(body);
+    const message = extractUserMessage(body, CHECKOUT_FALLBACK_ERROR_MESSAGE);
     throw new CheckoutApiError(message, response.status);
   }
 

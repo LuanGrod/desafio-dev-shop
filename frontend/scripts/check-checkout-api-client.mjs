@@ -4,8 +4,8 @@ import { dirname, resolve } from "node:path";
 import assert from "node:assert/strict";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const apiClientPath = resolve(__dirname, "../app/checkout/api.ts");
-assert.ok(existsSync(apiClientPath), "checkout API client should exist at app/checkout/api.ts");
+const apiClientPath = resolve(__dirname, "../app/utils/checkout/api.ts");
+assert.ok(existsSync(apiClientPath), "checkout API client should exist at app/utils/checkout/api.ts");
 const source = readFileSync(apiClientPath, "utf8");
 
 assert.match(
@@ -90,7 +90,7 @@ assert.match(
 
 assert.match(
   source,
-  /class CheckoutApiError extends Error/,
+  /class CheckoutApiError extends GenericApiError/,
   "checkout API client should expose a dedicated error type",
 );
 

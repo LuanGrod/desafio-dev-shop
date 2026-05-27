@@ -15,9 +15,14 @@
     "test:checkout-messages": "node ./scripts/check-checkout-messages.mjs",
     "test:checkout-submit": "node ./scripts/check-checkout-submit.mjs",
     "test:checkout-summary": "node ./scripts/check-checkout-summary.mjs",
+    "test:checkout-view-model": "node ./scripts/check-checkout-view-model.mjs",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
-    "test:checkout-react-query": "node ./scripts/check-checkout-react-query.mjs"
+    "test:checkout-react-query": "node ./scripts/check-checkout-react-query.mjs",
+    "test:e2e": "playwright test",
+    "test:component": "vitest run",
+    "test:checkout-api-runtime": "node ./scripts/check-checkout-api-runtime.mjs",
+    "test": "npm run test:checkout-layout && npm run test:checkout-product && npm run test:checkout-quantity-stepper && npm run test:checkout-idempotency && npm run test:checkout-idempotency-retries && npm run test:checkout-api-client && npm run test:checkout-api-runtime && npm run test:checkout-polling && npm run test:checkout-messages && npm run test:checkout-submit && npm run test:checkout-summary && npm run test:checkout-view-model && npm run test:checkout-react-query"
   },
   "dependencies": {
     "@react-router/node": "7.15.1",
@@ -26,18 +31,22 @@
     "isbot": "^5.1.36",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-hot-toast": "^2.6.0",
-    "react-router": "7.15.1",
-    "zustand": "^5.0.13"
+    "react-router": "7.15.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@react-router/dev": "7.15.1",
     "@tailwindcss/vite": "^4.2.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "jsdom": "^29.1.1",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3",
-    "vite": "^8.0.3"
+    "vite": "^8.0.3",
+    "vitest": "^4.1.7"
   }
 }

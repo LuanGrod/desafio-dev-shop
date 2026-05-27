@@ -9,8 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { Toaster } from "react-hot-toast";
-import { CheckoutQueryProvider } from "./checkout/query-client";
+import { ProviderReactQuery } from "./provider/ReactQuery";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -35,7 +34,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <div><Toaster position="top-right" reverseOrder={false} /></div>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -46,9 +44,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <CheckoutQueryProvider>
+    <ProviderReactQuery>
       <Outlet />
-    </CheckoutQueryProvider>
+    </ProviderReactQuery>
   );
 }
 

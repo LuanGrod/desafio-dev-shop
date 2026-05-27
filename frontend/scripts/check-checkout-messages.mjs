@@ -4,59 +4,15 @@ import { dirname, resolve } from "node:path";
 import assert from "node:assert/strict";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const checkoutPath = resolve(__dirname, "../app/routes/checkout.tsx");
-const source = readFileSync(checkoutPath, "utf8");
+const viewModelSource = readFileSync(resolve(__dirname, "../app/utils/checkout/view-model.ts"), "utf8");
+const statusSource = readFileSync(resolve(__dirname, "../app/component/checkout/StatusMessage.tsx"), "utf8");
+const hookSource = readFileSync(resolve(__dirname, "../app/hook/checkout/useCheckoutFlow.ts"), "utf8");
 
-assert.match(
-  source,
-  /type\s+CheckoutMessageTone\s*=\s*"processing"\s*\|\s*"success"\s*\|\s*"rejected"\s*\|\s*"error"/,
-  "checkout page should model distinct visual tones for processing, success, rejection, and unexpected errors",
-);
-
-assert.match(
-  source,
-  /type\s+CheckoutDisplayOrder\s*=[\s\S]*CheckoutOrderResponse[\s\S]*status:\s*"ERROR"[\s\S]*message:\s*string[\s\S]*\}/,
-  "checkout page should use checkoutOrder as the single source for API and local error messages",
-);
-
-assert.doesNotMatch(
-  source,
-  /checkoutErrorMessage|setCheckoutErrorMessage|const\s+checkoutMessage\s*=/,
-  "checkout page should not keep separate message state or derived checkoutMessage aliases",
-);
-
-assert.doesNotMatch(
-  source,
-  /checkoutMessage\.title|title:\s*"Pedido em processamento"|title:\s*"Status aprovado"|title:\s*"Status rejeitado"|title:\s*"Não foi possível concluir"/,
-  "checkout status message should not render or define separate titles",
-);
-
-assert.match(
-  source,
-  /const\s+checkoutMessageTone(?::\s*CheckoutMessageTone)?\s*=[\s\S]*checkoutOrder\?\.status\s*===\s*"PROCESSING"[\s\S]*"processing"[\s\S]*checkoutOrder\?\.status\s*===\s*"APPROVED"[\s\S]*"success"[\s\S]*checkoutOrder\?\.status\s*===\s*"REJECTED"[\s\S]*"rejected"[\s\S]*"error"/s,
-  "checkout page should derive a distinct visual tone from checkoutOrder status",
-);
-
-assert.match(
-  source,
-  /setCheckoutOrder\(\{\s*order_id:\s*null,\s*status:\s*"ERROR",\s*message:\s*CHECKOUT_FALLBACK_ERROR_MESSAGE,?\s*\}\)/,
-  "polling or unexpected failures should show the local generic fallback through checkoutOrder",
-);
-
-assert.match(
-  source,
-  /role="status"[\s\S]*aria-live="polite"[\s\S]*\{checkoutOrder\.message\}/,
-  "checkout page should expose checkoutOrder.message in a screen-reader-friendly inline region",
-);
-
-assert.match(
-  source,
-  /const\s+checkoutMessageToneClasses[\s\S]*processing:[\s\S]*success:[\s\S]*rejected:[\s\S]*error:[\s\S]*checkoutMessageToneClasses\[checkoutMessageTone\]/,
-  "checkout message styles should differentiate processing, success, rejection, and unexpected errors",
-);
-
-assert.doesNotMatch(
-  source,
-  /Compra aprovada|Pagamento aprovado|Pedido aprovado|Compra rejeitada|Pedido rejeitado|Estoque insuficiente\./,
-  "checkout page should not hardcode final approval, rejection, or stock messages as business rules",
-);
+assert.match(viewModelSource, /type\s+CheckoutMessageTone\s*=\s*"processing"\s*\|\s*"success"\s*\|\s*"rejected"\s*\|\s*"error"/, "checkout should model distinct visual tones");
+assert.match(viewModelSource, /type\s+CheckoutDisplayOrder\s*=[\s\S]*CheckoutOrderResponse[\s\S]*status:\s*"ERROR"[\s\S]*message:\s*string[\s\S]*\}/, "checkout should use checkoutOrder as the single source for API and local error messages");
+assert.doesNotMatch(hookSource, /checkoutErrorMessage|setCheckoutErrorMessage|const\s+checkoutMessage\s*=/, "checkout flow should not keep separate message state or derived aliases");
+assert.match(viewModelSource, /getCheckoutMessageTone[\s\S]*status === "PROCESSING"[\s\S]*"processing"[\s\S]*status === "APPROVED"[\s\S]*"success"[\s\S]*status === "REJECTED"[\s\S]*"rejected"[\s\S]*"error"/, "checkout should derive a distinct visual tone from checkoutOrder status");
+assert.match(hookSource, /setCheckoutOrder\(toCheckoutErrorOrder\(new Error\(CHECKOUT_FALLBACK_ERROR_MESSAGE\)\)\)/, "polling failures should show the local generic fallback through checkoutOrder");
+assert.match(statusSource, /role="status"[\s\S]*aria-live="polite"[\s\S]*\{order\.message\}/, "checkout should expose checkoutOrder.message in a screen-reader-friendly inline region");
+assert.match(statusSource, /checkoutMessageToneClasses[\s\S]*processing:[\s\S]*success:[\s\S]*rejected:[\s\S]*error:[\s\S]*checkoutMessageToneClasses\[tone\]/, "checkout message styles should differentiate statuses");
+assert.doesNotMatch(viewModelSource + hookSource, /Compra aprovada|Pagamento aprovado|Pedido aprovado|Compra rejeitada|Pedido rejeitado|Estoque insuficiente\./, "checkout frontend should not hardcode final business messages");
