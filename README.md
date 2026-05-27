@@ -134,62 +134,26 @@ npm run build
 
 ### Frontend
 
-O frontend tem três tipos de verificação.
-
-#### Checks estáticos do checkout
-
-Os scripts em `frontend/scripts/` fazem validações estáticas e pequenas validações isoladas sobre o código gerado. Eles foram úteis principalmente para guiar e conferir a implementação assistida por IA, garantindo pontos como estrutura do layout, contrato do client de API, idempotência, polling, mensagens, view-model e integração com React Query.
-
-Para rodar todos esses checks:
+O frontend usa scripts de verificação para o checkout, Vitest para teste de componente e Playwright para E2E.
 
 ~~~bash
 cd frontend
 npm run test
-~~~
-
-Também é possível rodar cada check individualmente, por exemplo:
-
-~~~bash
-npm run test:checkout-api-client
-npm run test:checkout-polling
-npm run test:checkout-view-model
-npm run test:checkout-react-query
-~~~
-
-#### Teste de componente com React Testing Library
-
-Também existe um teste de componente com Vitest + React Testing Library. Atualmente ele cobre apenas o `CheckoutSummary`, validando o comportamento visual e interativo do resumo do checkout, como botão desabilitado durante envio, mensagens de status, incremento/decremento de quantidade e bloqueio de submit inválido.
-
-Para rodar:
-
-~~~bash
-cd frontend
 npm run test:component
+npm run test:e2e
 ~~~
 
-#### Teste E2E com Playwright
-
-O teste E2E com Playwright cobre o fluxo principal do checkout no navegador, com API mockada. Ele valida a renderização da tela, alteração de quantidade, envio do checkout, payload com `items`, uso de `Idempotency-Key`, estado `PROCESSING` e status final aprovado.
-
-Para rodar:
+Também existem scripts de apoio para qualidade e build:
 
 ~~~bash
-cd frontend
-npm run test:e2e
+npm run typecheck
+npm run build
 ~~~
 
 Na primeira execução, pode ser necessário baixar o Chromium usado pelo Playwright:
 
 ~~~bash
 npx playwright install chromium
-~~~
-
-#### Typecheck e build
-
-~~~bash
-cd frontend
-npm run typecheck
-npm run build
 ~~~
 
 ## Estrutura do backend
@@ -261,21 +225,6 @@ Essa escolha foi intencional. Como o desafio não pede autenticação, cadastro,
 
 Pelo mesmo motivo, não existe header de autenticação. O único header funcional além de `Content-Type` é o `Idempotency-Key`, usado para evitar que retentativas da mesma compra criem pedidos duplicados.
 
-## CORS
-
-Configurei CORS no backend em `backend/src/cors.ts` para permitir a comunicação do frontend local com a API.
-
-A configuração libera os métodos necessários para o desafio:
-
-- `GET`
-- `POST`
-- `OPTIONS`
-
-E os headers:
-
-- `Content-Type`
-- `Idempotency-Key`
-
 ## Trade-offs e decisões
 
 ### Polling no frontend
@@ -285,12 +234,6 @@ Depois que o pedido é criado com status `PROCESSING`, o frontend consulta `GET 
 Para um produto real, o ideal seria implementar SSE (Server-Sent Events) ou outro mecanismo de atualização ativa. Isso reduziria consultas repetidas e deixaria a atualização de status mais eficiente.
 
 Para este desafio, optei por polling porque é simples, fácil de avaliar e suficiente para demonstrar o fluxo assíncrono sem adicionar uma camada extra de infraestrutura.
-
-### Payload reduzido
-
-O payload do checkout contém somente `items` porque o escopo não inclui autenticação, cliente, endereço, pagamento ou faturamento. Em um cenário real, esses dados existiriam e provavelmente viriam de outras partes do sistema ou de um usuário autenticado.
-
-Aqui eu preferi manter a API pequena para que o avaliador consiga enxergar rapidamente as validações, a idempotência e o processamento do pedido.
 
 ### Dados em memória
 
